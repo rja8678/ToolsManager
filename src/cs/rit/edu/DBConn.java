@@ -30,6 +30,10 @@ public class DBConn {
         return c != null;
     }
 
+    public Connection getC() {
+        return c;
+    }
+
     public String getTestVal() {
         Statement stmt = null;
         if(!connected()) {
