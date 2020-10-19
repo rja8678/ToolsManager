@@ -8,7 +8,7 @@ public class Main {
 
 			DBConn conn = new DBConn(username, password);
 			conn.getTestVal();
-		}else {
+		} else {
 			System.out.println("Please give the database username and password as commandline arguments");
 		}
 	}

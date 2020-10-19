@@ -1669,9 +1669,11 @@ true posixrules
     <database id="66" parent="1" name="p320_31">
       <ObjectId>512940</ObjectId>
       <Owner>p320_31</Owner>
-      <IntrospectionStateNumber>883837</IntrospectionStateNumber>
+      <IntrospectionStateNumber>886159</IntrospectionStateNumber>
       <Current>1</Current>
-      <Relations>sequence|table|521519|521521|1
+      <Relations>sequence|table|522095|522097|1
+sequence|table|522103|522105|1
+sequence|table|522116|522118|1
 </Relations>
     </database>
     <database id="67" parent="1" name="p320_32">
@@ -2122,7 +2124,7 @@ true posixrules
       <Comment>standard public schema</Comment>
       <StateNumber>351</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>883838</IntrospectionStateNumber>
+      <IntrospectionStateNumber>886160</IntrospectionStateNumber>
       <Current>1</Current>
     </schema>
     <access-method id="178" parent="66" name="btree">
@@ -2185,51 +2187,480 @@ true posixrules
     <language id="186" parent="66" name="internal"/>
     <language id="187" parent="66" name="plpgsql"/>
     <language id="188" parent="66" name="sql"/>
-    <sequence id="189" parent="177" name="test_id_seq">
-      <ObjectId>521519</ObjectId>
+    <sequence id="189" parent="177" name="lendinglog_idlog_seq">
+      <ObjectId>522116</ObjectId>
       <Owner>p320_31</Owner>
-      <StateNumber>883262</StateNumber>
+      <StateNumber>886150</StateNumber>
       <DataType>integer|0s</DataType>
     </sequence>
-    <table id="190" parent="177" name="test">
-      <ObjectId>521521</ObjectId>
-      <Comment>oi</Comment>
+    <sequence id="190" parent="177" name="tool_idtool_seq">
+      <ObjectId>522103</ObjectId>
       <Owner>p320_31</Owner>
-      <StateNumber>883262</StateNumber>
+      <StateNumber>886148</StateNumber>
+      <DataType>integer|0s</DataType>
+    </sequence>
+    <sequence id="191" parent="177" name="user_iduser_seq">
+      <ObjectId>522095</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886147</StateNumber>
+      <DataType>integer|0s</DataType>
+    </sequence>
+    <table id="192" parent="177" name="collection">
+      <ObjectId>522190</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886155</StateNumber>
     </table>
-    <column id="191" parent="190" name="id">
+    <table id="193" parent="177" name="lendinglog">
+      <ObjectId>522118</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886154</StateNumber>
+    </table>
+    <table id="194" parent="177" name="tool">
+      <ObjectId>522105</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886155</StateNumber>
+    </table>
+    <table id="195" parent="177" name="tool_log">
+      <ObjectId>522125</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886151</StateNumber>
+    </table>
+    <table id="196" parent="177" name="tool_tooltype">
+      <ObjectId>522155</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886153</StateNumber>
+    </table>
+    <table id="197" parent="177" name="tooltype">
+      <ObjectId>522111</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886153</StateNumber>
+    </table>
+    <table id="198" parent="177" name="user">
+      <ObjectId>522097</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886155</StateNumber>
+    </table>
+    <table id="199" parent="177" name="user_lending_log">
+      <ObjectId>522170</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886154</StateNumber>
+    </table>
+    <table id="200" parent="177" name="user_owns_tool">
+      <ObjectId>522140</ObjectId>
+      <Owner>p320_31</Owner>
+      <StateNumber>886152</StateNumber>
+    </table>
+    <column id="201" parent="192" name="iduser">
       <Position>1</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>883262</StateNumber>
-      <DefaultExpression>nextval(&apos;test_id_seq&apos;::regclass)</DefaultExpression>
+      <StateNumber>886155</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="192" parent="190" name="val">
+    <column id="202" parent="192" name="idtool">
       <Position>2</Position>
-      <DataType>varchar(250)|0s</DataType>
-      <StateNumber>883262</StateNumber>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886155</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="203" parent="192" name="collection_pkey">
+      <ObjectId>522193</ObjectId>
+      <StateNumber>886155</StateNumber>
+      <ColNames>iduser
+idtool</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="204" parent="192" name="collection_pkey">
+      <ObjectId>522194</ObjectId>
+      <StateNumber>886155</StateNumber>
+      <ColNames>iduser
+idtool</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>collection_pkey</UnderlyingIndexName>
+    </key>
+    <foreign-key id="205" parent="192" name="collection_iduser_fkey">
+      <ObjectId>522195</ObjectId>
+      <StateNumber>886155</StateNumber>
+      <ColNames>iduser</ColNames>
+      <RefTableId>522097</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>user</RefTableName>
+      <RefKeyName>user_pkey</RefKeyName>
+      <RefColNames>iduser</RefColNames>
+    </foreign-key>
+    <foreign-key id="206" parent="192" name="collection_idtool_fkey">
+      <ObjectId>522200</ObjectId>
+      <StateNumber>886155</StateNumber>
+      <ColNames>idtool</ColNames>
+      <RefTableId>522105</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>tool</RefTableName>
+      <RefKeyName>tool_pkey</RefKeyName>
+      <RefColNames>idtool</RefColNames>
+    </foreign-key>
+    <column id="207" parent="193" name="idlog">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886150</StateNumber>
+      <DefaultExpression>nextval(&apos;lendinglog_idlog_seq&apos;::regclass)</DefaultExpression>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="208" parent="193" name="log_date">
+      <Position>2</Position>
+      <DataType>date|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886150</StateNumber>
+      <DefaultExpression>CURRENT_DATE</DefaultExpression>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="209" parent="193" name="action">
+      <Position>3</Position>
+      <DataType>integer|0s</DataType>
+      <StateNumber>886150</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="210" parent="193" name="return_date">
+      <Position>4</Position>
+      <DataType>date|0s</DataType>
+      <StateNumber>886150</StateNumber>
+      <TypeId>1082</TypeId>
+    </column>
+    <index id="211" parent="193" name="lendinglog_pkey">
+      <ObjectId>522123</ObjectId>
+      <StateNumber>886150</StateNumber>
+      <ColNames>idlog</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="212" parent="193" name="lendinglog_pkey">
+      <ObjectId>522124</ObjectId>
+      <StateNumber>886150</StateNumber>
+      <ColNames>idlog</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>lendinglog_pkey</UnderlyingIndexName>
+    </key>
+    <column id="213" parent="194" name="idtool">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886148</StateNumber>
+      <DefaultExpression>nextval(&apos;tool_idtool_seq&apos;::regclass)</DefaultExpression>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="214" parent="194" name="name">
+      <Position>2</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <StateNumber>886148</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="193" parent="190" name="test_id_uindex">
-      <ObjectId>521525</ObjectId>
-      <StateNumber>883264</StateNumber>
-      <ColNames>id</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <index id="194" parent="190" name="test_pk">
-      <ObjectId>521526</ObjectId>
-      <StateNumber>883265</StateNumber>
-      <ColNames>id</ColNames>
+    <column id="215" parent="194" name="lendable">
+      <Position>3</Position>
+      <DataType>smallint|0s</DataType>
+      <StateNumber>886148</StateNumber>
+      <TypeId>21</TypeId>
+    </column>
+    <column id="216" parent="194" name="purchase_date">
+      <Position>4</Position>
+      <DataType>date|0s</DataType>
+      <StateNumber>886148</StateNumber>
+      <TypeId>1082</TypeId>
+    </column>
+    <index id="217" parent="194" name="tool_pkey">
+      <ObjectId>522109</ObjectId>
+      <StateNumber>886148</StateNumber>
+      <ColNames>idtool</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="195" parent="190" name="test_pk">
-      <ObjectId>521527</ObjectId>
-      <StateNumber>883265</StateNumber>
-      <ColNames>id</ColNames>
+    <key id="218" parent="194" name="tool_pkey">
+      <ObjectId>522110</ObjectId>
+      <StateNumber>886148</StateNumber>
+      <ColNames>idtool</ColNames>
       <Primary>1</Primary>
-      <UnderlyingIndexName>test_pk</UnderlyingIndexName>
+      <UnderlyingIndexName>tool_pkey</UnderlyingIndexName>
     </key>
+    <column id="219" parent="195" name="idtool">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886151</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="220" parent="195" name="idlog">
+      <Position>2</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886151</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="221" parent="195" name="tool_log_pkey">
+      <ObjectId>522128</ObjectId>
+      <StateNumber>886151</StateNumber>
+      <ColNames>idtool
+idlog</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="222" parent="195" name="tool_log_pkey">
+      <ObjectId>522129</ObjectId>
+      <StateNumber>886151</StateNumber>
+      <ColNames>idtool
+idlog</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>tool_log_pkey</UnderlyingIndexName>
+    </key>
+    <foreign-key id="223" parent="195" name="tool_log_idtool_fkey">
+      <ObjectId>522130</ObjectId>
+      <StateNumber>886151</StateNumber>
+      <ColNames>idtool</ColNames>
+      <RefTableId>522105</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>tool</RefTableName>
+      <RefKeyName>tool_pkey</RefKeyName>
+      <RefColNames>idtool</RefColNames>
+    </foreign-key>
+    <foreign-key id="224" parent="195" name="tool_log_idlog_fkey">
+      <ObjectId>522135</ObjectId>
+      <StateNumber>886151</StateNumber>
+      <ColNames>idlog</ColNames>
+      <RefTableId>522118</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>lendinglog</RefTableName>
+      <RefKeyName>lendinglog_pkey</RefKeyName>
+      <RefColNames>idlog</RefColNames>
+    </foreign-key>
+    <column id="225" parent="196" name="idtool">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886153</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="226" parent="196" name="idtool_type">
+      <Position>2</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886153</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="227" parent="196" name="tool_tooltype_pkey">
+      <ObjectId>522158</ObjectId>
+      <StateNumber>886153</StateNumber>
+      <ColNames>idtool
+idtool_type</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="228" parent="196" name="tool_tooltype_pkey">
+      <ObjectId>522159</ObjectId>
+      <StateNumber>886153</StateNumber>
+      <ColNames>idtool
+idtool_type</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>tool_tooltype_pkey</UnderlyingIndexName>
+    </key>
+    <foreign-key id="229" parent="196" name="tool_tooltype_idtool_fkey">
+      <ObjectId>522160</ObjectId>
+      <StateNumber>886153</StateNumber>
+      <ColNames>idtool</ColNames>
+      <RefTableId>522105</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>tool</RefTableName>
+      <RefKeyName>tool_pkey</RefKeyName>
+      <RefColNames>idtool</RefColNames>
+    </foreign-key>
+    <foreign-key id="230" parent="196" name="tool_tooltype_idtool_type_fkey">
+      <ObjectId>522165</ObjectId>
+      <StateNumber>886153</StateNumber>
+      <ColNames>idtool_type</ColNames>
+      <RefTableId>522111</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>tooltype</RefTableName>
+      <RefKeyName>tooltype_pkey</RefKeyName>
+      <RefColNames>idtool_type</RefColNames>
+    </foreign-key>
+    <column id="231" parent="197" name="idtool_type">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886149</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="232" parent="197" name="type_name">
+      <Position>2</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <StateNumber>886149</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="233" parent="197" name="tooltype_pkey">
+      <ObjectId>522114</ObjectId>
+      <StateNumber>886149</StateNumber>
+      <ColNames>idtool_type</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="234" parent="197" name="tooltype_pkey">
+      <ObjectId>522115</ObjectId>
+      <StateNumber>886149</StateNumber>
+      <ColNames>idtool_type</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>tooltype_pkey</UnderlyingIndexName>
+    </key>
+    <column id="235" parent="198" name="iduser">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886147</StateNumber>
+      <DefaultExpression>nextval(&apos;user_iduser_seq&apos;::regclass)</DefaultExpression>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="236" parent="198" name="fname">
+      <Position>2</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <StateNumber>886147</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="237" parent="198" name="lname">
+      <Position>3</Position>
+      <DataType>varchar(45)|0s</DataType>
+      <StateNumber>886147</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="238" parent="198" name="user_pkey">
+      <ObjectId>522101</ObjectId>
+      <StateNumber>886147</StateNumber>
+      <ColNames>iduser</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="239" parent="198" name="user_pkey">
+      <ObjectId>522102</ObjectId>
+      <StateNumber>886147</StateNumber>
+      <ColNames>iduser</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>user_pkey</UnderlyingIndexName>
+    </key>
+    <column id="240" parent="199" name="to_iduser">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886154</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="241" parent="199" name="idlog">
+      <Position>2</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886154</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="242" parent="199" name="from_iduser">
+      <Position>3</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886154</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="243" parent="199" name="user_lending_log_pkey">
+      <ObjectId>522173</ObjectId>
+      <StateNumber>886154</StateNumber>
+      <ColNames>to_iduser
+idlog
+from_iduser</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="244" parent="199" name="user_lending_log_pkey">
+      <ObjectId>522174</ObjectId>
+      <StateNumber>886154</StateNumber>
+      <ColNames>to_iduser
+idlog
+from_iduser</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>user_lending_log_pkey</UnderlyingIndexName>
+    </key>
+    <foreign-key id="245" parent="199" name="user_lending_log_to_iduser_fkey">
+      <ObjectId>522175</ObjectId>
+      <StateNumber>886154</StateNumber>
+      <ColNames>to_iduser</ColNames>
+      <RefTableId>522097</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>user</RefTableName>
+      <RefKeyName>user_pkey</RefKeyName>
+      <RefColNames>iduser</RefColNames>
+    </foreign-key>
+    <foreign-key id="246" parent="199" name="user_lending_log_idlog_fkey">
+      <ObjectId>522185</ObjectId>
+      <StateNumber>886154</StateNumber>
+      <ColNames>idlog</ColNames>
+      <RefTableId>522118</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>lendinglog</RefTableName>
+      <RefKeyName>lendinglog_pkey</RefKeyName>
+      <RefColNames>idlog</RefColNames>
+    </foreign-key>
+    <foreign-key id="247" parent="199" name="user_lending_log_from_iduser_fkey">
+      <ObjectId>522180</ObjectId>
+      <StateNumber>886154</StateNumber>
+      <ColNames>from_iduser</ColNames>
+      <RefTableId>522097</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>user</RefTableName>
+      <RefKeyName>user_pkey</RefKeyName>
+      <RefColNames>iduser</RefColNames>
+    </foreign-key>
+    <column id="248" parent="200" name="iduser">
+      <Position>1</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886152</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="249" parent="200" name="idtool">
+      <Position>2</Position>
+      <DataType>integer|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>886152</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="250" parent="200" name="user_owns_tool_pkey">
+      <ObjectId>522143</ObjectId>
+      <StateNumber>886152</StateNumber>
+      <ColNames>iduser
+idtool</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <key id="251" parent="200" name="user_owns_tool_pkey">
+      <ObjectId>522144</ObjectId>
+      <StateNumber>886152</StateNumber>
+      <ColNames>iduser
+idtool</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>user_owns_tool_pkey</UnderlyingIndexName>
+    </key>
+    <foreign-key id="252" parent="200" name="user_owns_tool_iduser_fkey">
+      <ObjectId>522145</ObjectId>
+      <StateNumber>886152</StateNumber>
+      <ColNames>iduser</ColNames>
+      <RefTableId>522097</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>user</RefTableName>
+      <RefKeyName>user_pkey</RefKeyName>
+      <RefColNames>iduser</RefColNames>
+    </foreign-key>
+    <foreign-key id="253" parent="200" name="user_owns_tool_idtool_fkey">
+      <ObjectId>522150</ObjectId>
+      <StateNumber>886152</StateNumber>
+      <ColNames>idtool</ColNames>
+      <RefTableId>522105</RefTableId>
+      <RefColPositions>1</RefColPositions>
+      <RefTableName>tool</RefTableName>
+      <RefKeyName>tool_pkey</RefKeyName>
+      <RefColNames>idtool</RefColNames>
+    </foreign-key>
   </database-model>
 </dataSource>
