@@ -5,27 +5,30 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class ToolInterface extends Application{
 
+	
 	@Override
 	public void start(Stage stage) throws Exception {
+		TextField textField = new TextField ();
 		Button btn = new Button();
         btn.setText("Login");
         btn.setOnAction(new EventHandler<ActionEvent>() {
  
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
+                System.out.println(textField.getText());
             }
         });
-        
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        HBox hb = new HBox();
+        hb.getChildren().add(textField);
+        hb.getChildren().add(btn);
 
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(hb, 300, 250);
 
         stage.setTitle("Tool Interface");
         stage.setScene(scene);
