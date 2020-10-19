@@ -12,8 +12,10 @@ public class DBUser {
 
     //
     private DBConn conn;
-    private Connection connectionActual;
 
+    public DBUser(DBConn conn) {
+        this.conn = conn;
+    }
 
     public User createUserObject(int id){
         Statement stmt = null;
@@ -22,16 +24,23 @@ public class DBUser {
             return null;
         }
         try {
-            stmt = connectionActual.createStatement();
-            int foovalue = 500;
-            PreparedStatement st = connectionActual.prepareStatement("SELECT * FROM \"user\" WHERE columnfoo = ?");
-            st.setInt(1, foovalue);
+            stmt = conn.getConn().createStatement();
+            PreparedStatement st = conn.getConn().prepareStatement("SELECT * FROM \"user\" WHERE iduser = ?");
+            st.setInt(1, id);
             ResultSet rs = st.executeQuery();
-            while ( rs.next() ) {
 
+            String fname = null;
+            String lname = null;
+
+            while ( rs.next() ) {
+                fname = rs.getString("fname");
+                lname = rs.getString("lname") ;
             }
             rs.close();
             stmt.close();
+
+            return new User(id, fname, lname);
+
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);

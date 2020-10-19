@@ -30,7 +30,7 @@ public class DBConn {
         return c != null;
     }
 
-    public Connection getC() {
+    public Connection getConn() {
         return c;
     }
 
