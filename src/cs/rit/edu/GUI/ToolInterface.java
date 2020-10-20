@@ -22,8 +22,7 @@ public class ToolInterface extends Application{
 	public void start(Stage stage) throws Exception {
 		TextField username = new TextField();
 		username.setPromptText("Username");
-		PasswordField password = new PasswordField();
-		password.setPromptText("Password");
+
 		Button loginBtn = new Button();
         loginBtn.setText("Login");
         loginBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -31,7 +30,8 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
                 String usernameInput = username.getText();
-                String passwordInput = password.getText();
+                //TODO change this
+                String passwordInput = "fukee8lohx3ahga2Sahx";
 
                 if(usernameInput.isBlank() || passwordInput.isBlank()){
                     System.out.println("Please enter valid credentials!");
@@ -50,17 +50,14 @@ public class ToolInterface extends Application{
         });
 
         //Login at top of the screen
-        VBox usernameAndPassword = new VBox();
+        VBox usernameGroup = new VBox();
         Label usernameLab = new Label("Username: ");
-        Label passwordLab = new Label("Password: ");
-        usernameAndPassword.getChildren().add(usernameLab);
-        usernameAndPassword.getChildren().add(username);
-        usernameAndPassword.getChildren().add(passwordLab);
-        usernameAndPassword.getChildren().add(password);
+        usernameGroup.getChildren().add(usernameLab);
+        usernameGroup.getChildren().add(username);
 
         HBox login = new HBox();
         login.setAlignment(Pos.CENTER_LEFT);
-        login.getChildren().add(usernameAndPassword);
+        login.getChildren().add(usernameGroup);
         login.getChildren().add(loginBtn);
 
         //Collection in the center
