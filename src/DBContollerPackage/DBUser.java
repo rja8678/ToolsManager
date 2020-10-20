@@ -42,7 +42,7 @@ public class DBUser {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        System.out.println("User with id: " + id + " fetched from DB successfully");
         return new User(id, fname, lname);
     }
 }

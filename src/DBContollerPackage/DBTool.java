@@ -40,7 +40,7 @@ public class DBTool {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        System.out.println("Tool with id " + toolID + " fetched from Database successfully");
         return new Tool(toolID, name, purchaseDate, lendable);//todo
     }
 }
