@@ -12,7 +12,6 @@ CREATE TABLE "user" (
     PRIMARY KEY (iduser)
 );
 
-
 DROP TABLE IF EXISTS tool;
 CREATE TABLE tool (
     idtool SERIAL,
@@ -22,14 +21,12 @@ CREATE TABLE tool (
     PRIMARY KEY (idtool)
 );
 
-
 DROP TABLE IF EXISTS tooltype ;
 CREATE TABLE tooltype (
     idtool_type INT NOT NULL,
     type_name VARCHAR(45) NULL,
     PRIMARY KEY (idtool_type)
 );
-
 
 DROP TABLE IF EXISTS lendinglog;
 CREATE TABLE lendinglog (
@@ -40,7 +37,6 @@ CREATE TABLE lendinglog (
     PRIMARY KEY (idlog)
 );
 
-
 CREATE TABLE tool_lendinglog (
     idtool INT NOT NULL,
     idlog INT NOT NULL,
@@ -48,7 +44,6 @@ CREATE TABLE tool_lendinglog (
     FOREIGN  KEY (idtool) REFERENCES tool (idtool),
     FOREIGN  KEY (idlog) REFERENCES lendinglog (idlog)
 );
-
 
 CREATE TABLE user_owns_tool (
     iduser INT NOT NULL,
@@ -58,7 +53,6 @@ CREATE TABLE user_owns_tool (
     FOREIGN  KEY (idtool) REFERENCES tool (idtool)
 );
 
-
 CREATE TABLE tool_tooltype (
     idtool INT NOT NULL,
     idtool_type INT NOT NULL,
@@ -66,7 +60,6 @@ CREATE TABLE tool_tooltype (
     FOREIGN  KEY (idtool) REFERENCES tool (idtool),
     FOREIGN  KEY (idtool_type) REFERENCES tooltype (idtool_type)
 );
-
 
 CREATE TABLE user_lending_log (
     to_iduser INT NOT NULL,
@@ -77,7 +70,6 @@ CREATE TABLE user_lending_log (
     FOREIGN  KEY (from_iduser) REFERENCES "user" (iduser),
     FOREIGN  KEY (idlog) REFERENCES lendinglog (idlog)
 );
-
 
 CREATE TABLE collection (
     iduser INT NOT NULL,
