@@ -17,7 +17,7 @@ public class Main {
 			User u1 = dbu.createUserObject(1);
 			System.out.println(u1.toString());
 
-			Tool t1 = dbt.makeTool(1);
+			Tool t1 = dbt.fetchTool(1);
 			System.out.println(t1.toString());
 
 			//conn.getTestVal();
