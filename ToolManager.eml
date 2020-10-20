@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component inheritJdk="true">
+<component jdk="JavaSE-10" jdk_type="JavaSDK">
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
-	<lib name="postgresql-42.2.18.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/postgresql-42.2.18.jar!/"/>
-	</lib>
+	<levels>
+		<level name="lib" value="project"/>
+		<level name="postgresql-42.2.18" value="project"/>
+	</levels>
 </component>
