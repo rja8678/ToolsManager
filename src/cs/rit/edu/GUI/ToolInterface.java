@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ToolInterface extends Application{
-	VBox collectionList;
+	VBox collectionList, ownedList;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -61,7 +61,13 @@ public class ToolInterface extends Application{
         login.getChildren().add(loginBtn);
 
         //Collection in the center
+        HBox toolLists = new HBox();
+        
         collectionList = new VBox();
+        ownedList = new VBox();
+        
+        toolLists.getChildren().add(collectionList);
+        toolLists.getChildren().add(ownedList);
         
         VBox toolCreation = new VBox();
         Label toolNameLabel = new Label("Tool Name: ");
@@ -96,7 +102,7 @@ public class ToolInterface extends Application{
         
         BorderPane pane = new BorderPane();
         pane.setTop(login);
-        pane.setCenter(collectionList);
+        pane.setCenter(toolLists);
         pane.setLeft(toolCreation);
         
 
@@ -116,6 +122,26 @@ public class ToolInterface extends Application{
 		for (Tool tool: tools) {
 			Label toolName = new Label(tool.getToolName());
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
+//			Label lendable = new Label((tool.isLendable() ? "True": "False"));
+
+			HBox toolEntry = new HBox();
+			toolEntry.getChildren().add(toolName);
+			toolEntry.getChildren().add(purchaseDate);
+//			toolEntry.getChildren().add(lendable);
+
+			collectionList.getChildren().add(toolEntry);
+		}
+	}
+	
+	//TODO Run this once user is logged in or the collection for the user has changed
+	/**
+	 * Displays a list of tools for the user representing their owned tools
+	 * @param tools List of tools to display
+	 */
+	public void refreshToolsOwned(List<Tool> tools) {
+		for (Tool tool: tools) {
+			Label toolName = new Label(tool.getToolName());
+			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
 			Label lendable = new Label((tool.isLendable() ? "True": "False"));
 
 			HBox toolEntry = new HBox();
@@ -123,7 +149,7 @@ public class ToolInterface extends Application{
 			toolEntry.getChildren().add(purchaseDate);
 			toolEntry.getChildren().add(lendable);
 
-			collectionList.getChildren().add(toolEntry);
+			ownedList.getChildren().add(toolEntry);
 		}
 	}
 	
