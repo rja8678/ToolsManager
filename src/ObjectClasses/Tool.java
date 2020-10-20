@@ -65,6 +65,7 @@ public class Tool {
         return "{id: " + this.toolID
                 + ", name: " + this.toolName
                 + ", purchase_date: " + this.purchaseDate
+                + ", types: " + this.toolTypes.toString()
                 + ", lendable " + this.lendable + "}";
     }
 }

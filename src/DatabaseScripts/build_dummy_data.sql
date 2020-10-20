@@ -19,3 +19,11 @@ INSERT INTO tool_tooltype VALUES (2,3);
 
 INSERT INTO tool_tooltype VALUES (3,1);
 INSERT INTO tool_tooltype VALUES (3,3);
+
+INSERT INTO collection VALUES (1,1);
+INSERT INTO collection VALUES (1,2);
+INSERT INTO collection VALUES (2,3);
+
+INSERT INTO user_owns_tool VALUES (1,1);
+INSERT INTO user_owns_tool VALUES (1,2);
+INSERT INTO user_owns_tool VALUES (2,3);

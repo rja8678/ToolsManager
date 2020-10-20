@@ -42,10 +42,10 @@ public class DBTool {
             System.exit(0);
         }
         System.out.println("Tool with id " + toolID + " fetched from Database successfully");
-        return new Tool(toolID, name, purchaseDate, lendable);//todo
+        return new Tool(toolID, name, purchaseDate, lendable, fetchToolTypes(toolID));
     }
 
-    public ArrayList<String> fetchToolTypes() {
+    public ArrayList<String> fetchAllToolTypes() {
         Statement stmt = null;
         ArrayList<String> types = new ArrayList<>() ;
 
@@ -68,7 +68,35 @@ public class DBTool {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Tool types pulled from database.");
+        System.out.println("All tool types pulled from database.");
+        return types;
+    }
+
+    public ArrayList<String> fetchToolTypes(int toolid) {
+        Statement stmt = null;
+        ArrayList<String> types = new ArrayList<>() ;
+
+        if(!dbConn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            stmt = dbConn.getConn().createStatement();
+            PreparedStatement st = dbConn.getConn().prepareStatement("SELECT type_name FROM tooltype JOIN tool_tooltype tt on tooltype.idtool_type = tt.idtool_type WHERE tt.idtool = ?");
+            st.setInt(1, toolid);
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                types.add(rs.getString("type_name"));
+            }
+            rs.close();
+            stmt.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Tool types for tool: "+ toolid +" pulled from database.");
         return types;
     }
 }

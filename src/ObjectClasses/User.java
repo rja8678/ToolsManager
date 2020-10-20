@@ -27,7 +27,6 @@ public class User {
         this.ownedTools = ownedTools;
     }
 
-
     public int getUserID() {
         return userID;
     }
@@ -40,8 +39,6 @@ public class User {
         return lastName;
     }
 
-
-
     public void addToCollection(Tool tool){
         this.toolCollection.put(tool.getToolID(), tool);
     }
@@ -53,8 +50,6 @@ public class User {
     public void removeFromCollection(int toolID){
         this.toolCollection.remove(toolID);
     }
-
-
 
     public int getNumToolsInCollection(){
         return this.toolCollection.size();
@@ -85,7 +80,7 @@ public class User {
      */
     @Override
     public String toString() {
-        return "{userID: " + userID + ", firstName: " + this.firstName + ", lastName: " + this.lastName + "}";
+        return "{userID: " + userID + ", firstName: " + this.firstName + ", lastName: " + this.lastName + ", OwnedTools: " + this.ownedTools.toString() +", Collection: "+ this.toolCollection.toString() +"}";
     }
 
 
