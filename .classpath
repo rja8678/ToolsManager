@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="javafx-sdk-11.0.2/lib/javafx.swing.jar"/>
 	<classpathentry kind="lib" path="javafx-sdk-11.0.2/lib/javafx.web.jar"/>
 	<classpathentry kind="lib" path="javafx-sdk-11.0.2/lib/src.zip"/>
+	<classpathentry kind="lib" path="postgresql-42.2.18.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
