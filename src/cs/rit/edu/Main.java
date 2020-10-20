@@ -20,7 +20,7 @@ public class Main {
 			Tool t1 = dbt.makeTool(1);
 			System.out.println(t1.toString());
 
-			conn.getTestVal();
+			//conn.getTestVal();
 
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");
