@@ -117,7 +117,4 @@ public class User {
             System.out.println("Tool with id: " + toolID + " is not owned by you, and cannot be lent");
         }
     }
-
-
-
 }
