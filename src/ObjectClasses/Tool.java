@@ -14,22 +14,23 @@ public class Tool {
 
     private Date purchaseDate;
 
-    //todo
-    private ArrayList<ToolType> toolTypes;
+    private ArrayList<String> toolTypes;
 
 
     /**
      * constructor for a tool object
-     * @param toolID the unqiue id of the tool
+     * @param toolID the unique id of the tool
      * @param toolName the name of the tool (not unique)
      * @param purchaseDate the date the tool was purchased
      * @param lendable whether or not the tool is flaggd and being lendable
+     * @param toolTypes a fully populated list
      */
-    public Tool(int toolID, String toolName, Date purchaseDate, boolean lendable){
+    public Tool(int toolID, String toolName, Date purchaseDate, boolean lendable, ArrayList<String> toolTypes){
         this.toolID = toolID;
         this.toolName = toolName;
         this.purchaseDate = purchaseDate;
         this.lendable = lendable;
+        this.toolTypes = toolTypes;
     }
 
 
@@ -48,7 +49,6 @@ public class Tool {
 
     public void setLendable(boolean lendable){
         this.lendable = lendable;
-        //todo call function in DBTool that will update database entry
     }
 
     public Date getPurchaseDate(){
@@ -56,6 +56,10 @@ public class Tool {
     }
 
 
+    /**
+     * returns String in tuple format representing this tool
+     * @return
+     */
     @Override
     public String toString() {
         return "{id: " + this.toolID
