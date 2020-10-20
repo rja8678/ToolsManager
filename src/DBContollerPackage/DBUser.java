@@ -48,6 +48,4 @@ public class DBUser {
         System.out.println("Operation done successfully");
         return null;
     }
-
-
 }
