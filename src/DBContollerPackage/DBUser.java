@@ -19,6 +19,8 @@ public class DBUser {
 
     public User createUserObject(int id){
         Statement stmt = null;
+        String fname = null;
+        String lname = null;
         if(!conn.connected()) {
             System.out.println("System not connected.");
             return null;
@@ -29,9 +31,6 @@ public class DBUser {
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
-            String fname = null;
-            String lname = null;
-
             while ( rs.next() ) {
                 fname = rs.getString("fname");
                 lname = rs.getString("lname") ;
@@ -39,13 +38,11 @@ public class DBUser {
             rs.close();
             stmt.close();
 
-            return new User(id, fname, lname);
-
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
         System.out.println("Operation done successfully");
-        return null;
+        return new User(id, fname, lname);
     }
 }

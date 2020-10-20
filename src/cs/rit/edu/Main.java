@@ -1,7 +1,8 @@
 package cs.rit.edu;
 
+import DBContollerPackage.DBTool;
 import DBContollerPackage.DBUser;
-import ObjectClasses.User;
+import ObjectClasses.*;
 
 public class Main {
 	public static void main(String [] args) {
@@ -11,9 +12,14 @@ public class Main {
 
 			DBConn conn = new DBConn(username, password);
 			DBUser dbu = new DBUser(conn) ;
+			DBTool dbt = new DBTool(conn);
 
 			User u1 = dbu.createUserObject(1);
 			System.out.println(u1.toString());
+
+			Tool t1 = dbt.makeTool(1);
+			System.out.println(t1.toString());
+
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");
 		}
