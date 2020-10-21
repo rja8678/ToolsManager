@@ -1,7 +1,11 @@
 package cs.rit.edu;
 
+import DBContollerPackage.DBTool;
+import ObjectClasses.Tool;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DBConn {
     Connection c = null ;
@@ -73,5 +77,29 @@ public class DBConn {
         }
         System.out.println("All tool types pulled from database.");
         return types;
+    }
+
+    public HashMap<Integer, String> fetchAllUsers() {
+        HashMap<Integer, String> users = new HashMap<>() ;
+
+        if(!this.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = this.getConn().prepareStatement("SELECT * from \"user\"");
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                users.put(rs.getInt("iduser"), rs.getString("fname") + " " +rs.getString("lname"));
+            }
+            rs.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+
+        System.out.println("Users where fetched from DB successfully");
+        return users;
     }
 }
