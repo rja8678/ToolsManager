@@ -2,3 +2,5 @@
 *.eml
 *.iml
 *.idea/
+*.classpath
+build/
