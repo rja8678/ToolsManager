@@ -115,4 +115,42 @@ public class DBUser {
         System.out.println("Collection for user: "+ id +" fetched from DB successfully");
         return collection;
     }
+
+    public boolean removeFromCollection(int uid, int tid) {
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("DELETE FROM collection WHERE iduser = ? AND idtool = ?");
+            st.setInt(1, uid);
+            st.setInt(2, tid);
+            st.executeUpdate();
+
+            conn.getConn().commit();
+            st.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+//            System.exit(0);
+            return false;
+        }
+        System.out.println("Operation done successfully");
+        return true;
+    }
+
+    public boolean addToCollection(int uid, int tid) {
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("INSERT INTO collection VALUES (?,?)");
+            st.setInt(1, uid);
+            st.setInt(2, tid);
+            st.executeUpdate();
+
+            conn.getConn().commit();
+            st.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+//            System.exit(0);
+            return false;
+        }
+        System.out.println("Operation done successfully");
+        return true;
+    }
 }

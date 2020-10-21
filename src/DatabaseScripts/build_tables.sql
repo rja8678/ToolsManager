@@ -61,7 +61,7 @@ CREATE TABLE tool_tooltype (
     FOREIGN  KEY (idtool_type) REFERENCES tooltype (idtool_type)
 );
 
-CREATE TABLE user_lending_log (
+CREATE TABLE user_lendinglog (
     to_iduser INT NOT NULL,
     idlog INT NOT NULL,
     from_iduser INT NOT NULL,

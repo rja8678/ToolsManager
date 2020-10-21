@@ -11,14 +11,19 @@ public class Main {
 			String password = args[1];
 
 			DBConn conn = new DBConn(username, password);
-			DBUser dbu = new DBUser(conn) ;
-			DBTool dbt = new DBTool(conn);
 
-			User u1 = dbu.createUserObject(1);
+			User u1 = new User(1, conn);
 			System.out.println(u1.toString());
 
-			Tool t1 = dbt.fetchTool(1);
-			System.out.println(t1.toString());
+			User u2 = new User(2, conn);
+			System.out.println(u2.toString());
+
+			// BELOW WORKS, UNCOMMENT TO LEND A TOOL FROM u1's collection to u2
+//			u1.lendTool(u1.getToolCollection().getFirst(), u2);
+//
+//			System.out.println("User1 Collection: " + u1.getToolCollection().toString());
+//			System.out.println("User2 Collection: " + u2.getToolCollection().toString());
+
 
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");

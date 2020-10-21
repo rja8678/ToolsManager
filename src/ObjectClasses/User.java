@@ -9,6 +9,8 @@ import java.util.LinkedList;
 
 public class User {
 
+    private DBUser dbu = null;
+
     private int userID;
 
     private String firstName;
@@ -37,13 +39,13 @@ public class User {
 
         User t = dbu.createUserObject(id);
 
+        this.dbu = dbu;
         this.userID = t.userID;
         this.firstName = t.firstName;
         this.lastName = t.lastName;
         this.toolCollection = t.toolCollection;
         this.ownedTools = t.ownedTools;
     }
-
 
     public int getUserID() {
         return userID;
@@ -57,16 +59,47 @@ public class User {
         return lastName;
     }
 
-    public void addToCollection(Tool tool){
-        this.toolCollection.put(tool.getToolID(), tool);
+    public boolean addToCollection(Tool tool){
+        int toolID = tool.getToolID();
+
+        try {
+            if(dbu.addToCollection(this.userID,toolID)) {
+                this.toolCollection.put(tool.getToolID(), tool);
+                return true;
+            }
+            else {
+                System.out.println("Failed to add tool "+ toolID +" to collection: " +this.userID);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("DB-FAILURE: Failed to add tool "+ toolID +" to collection: " +this.userID);
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
     public Tool getToolFromCollection(int toolID){
         return this.toolCollection.get(toolID);
     }
 
-    public void removeFromCollection(int toolID){
-        this.toolCollection.remove(toolID);
+    public boolean removeFromCollection(Tool tool){
+        int toolID = tool.getToolID();
+        try {
+            if(dbu.removeFromCollection(this.userID,toolID)) {
+                this.toolCollection.remove(toolID);
+                return true;
+            }
+            else {
+                System.out.println("Failed to remove tool "+ toolID +" from collection: " +this.userID);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("DB-FAILURE: Failed to remove tool "+ toolID +" from collection: " +this.userID);
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
     public int getNumToolsInCollection(){
@@ -115,26 +148,30 @@ public class User {
      *
      * this method only affects the user object. All DB is
      *
-     * @param toolID the unique key to find a tool
-     * @param user the user to give the tool to
+     * @param tool the tool object
+     * @param user_to the user to give the tool to
      */
-    public void lendTool(int toolID, User user){
+    public void lendTool(Tool tool, User user_to){
         //check if tool is owned by you and is currently in your possession
-        if(this.ownedTools.containsKey(toolID)) {
-            if (this.toolCollection.containsKey(toolID)) {
-                Tool lentTool = this.getToolFromOwned(toolID);
+        if(this.ownedTools.containsKey(tool.getToolID())) {
+            if (this.toolCollection.containsKey(tool.getToolID())) {
                 //then check if it is marked as lendable
-                if (lentTool.isLendable()) {
-                    this.removeFromCollection(toolID);
-                    user.addToCollection(lentTool);
+                if (tool.isLendable()) {
+                    this.removeFromCollection(tool);
+                    user_to.addToCollection(tool);
+
+                    //todo make a log object and store this transaction in db, also prob need 'return date' as a param
+
+                    //todo add a check if the tool being lent is owned by the person its going to (makes this function reusable for tool returns)
+
                 } else {
-                    System.out.println("Tool you own and have with id " + toolID + " is not marked as lendable");
+                    System.out.println("Tool you own and have with id " + tool.getToolID() + " is not marked as lendable");
                 }
             } else {
-                System.out.println("Tool you own with id: " + toolID + " is not currently in your collection, and cannot be lent");
+                System.out.println("Tool you own with id: " + tool.getToolID() + " is not currently in your collection, and cannot be lent");
             }
         } else {
-            System.out.println("Tool with id: " + toolID + " is not owned by you, and cannot be lent");
+            System.out.println("Tool with id: " + tool.getToolID() + " is not owned by you, and cannot be lent");
         }
     }
 }
