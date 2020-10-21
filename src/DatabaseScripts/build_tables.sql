@@ -1,8 +1,7 @@
 DROP TABLE IF EXISTS collection;
-DROP TABLE IF EXISTS tool_lendinglog ;
+DROP TABLE IF EXISTS log_relation ;
 DROP TABLE IF EXISTS user_owns_tool;
 DROP TABLE IF EXISTS tool_tooltype;
-DROP TABLE IF EXISTS user_lendinglog;
 
 DROP TABLE IF EXISTS "user";
 CREATE TABLE "user" (
@@ -37,14 +36,6 @@ CREATE TABLE lendinglog (
     PRIMARY KEY (idlog)
 );
 
-CREATE TABLE tool_lendinglog (
-    idtool INT NOT NULL,
-    idlog INT NOT NULL,
-    PRIMARY KEY (idtool, idlog),
-    FOREIGN  KEY (idtool) REFERENCES tool (idtool),
-    FOREIGN  KEY (idlog) REFERENCES lendinglog (idlog)
-);
-
 CREATE TABLE user_owns_tool (
     iduser INT NOT NULL,
     idtool INT NOT NULL,
@@ -61,14 +52,16 @@ CREATE TABLE tool_tooltype (
     FOREIGN  KEY (idtool_type) REFERENCES tooltype (idtool_type)
 );
 
-CREATE TABLE user_lendinglog (
+CREATE TABLE log_relation (
     to_iduser INT NOT NULL,
     idlog INT NOT NULL,
     from_iduser INT NOT NULL,
-    PRIMARY KEY (to_iduser, idlog, from_iduser),
+    idtool INT NOT NULL,
+    PRIMARY KEY (to_iduser, idlog, from_iduser, idtool),
     FOREIGN  KEY (to_iduser) REFERENCES "user" (iduser),
     FOREIGN  KEY (from_iduser) REFERENCES "user" (iduser),
-    FOREIGN  KEY (idlog) REFERENCES lendinglog (idlog)
+    FOREIGN  KEY (idlog) REFERENCES lendinglog (idlog),
+    FOREIGN  KEY (idtool) REFERENCES tool (idtool)
 );
 
 CREATE TABLE collection (

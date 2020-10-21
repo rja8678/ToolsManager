@@ -33,8 +33,6 @@ public class Tool {
         this.toolTypes = toolTypes;
     }
 
-
-
     public int getToolID(){
 
         return this.toolID;
