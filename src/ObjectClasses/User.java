@@ -22,7 +22,7 @@ public class User {
     private HashMap<Integer, Tool> ownedTools;
 
     /**
-     * temp constructor for user object. just for testing purposes before database implementation
+     * Constructor used by the DBUser to create a user object. This should not be filled with any data except
      */
     public User(int userID, String firstName, String lastName,
                 HashMap<Integer, Tool> toolCollection, HashMap<Integer, Tool> ownedTools){
@@ -34,6 +34,11 @@ public class User {
         this.ownedTools = ownedTools;
     }
 
+    /**
+     * constructor for retrieving a User object from the database based on ID
+     * @param id the unique id identifying the user
+     * @param conn the connection to the database
+     */
     public User (int id, DBConn conn) {
         DBUser dbu = new DBUser(conn) ;
 
@@ -209,4 +214,37 @@ public class User {
         }
         return false ;
     }
+
+
+    /**
+     * Function that returns a given tool from this User's collection back to a given user who owns it
+     * If user_to does not actually own the tool, then function will fail to return tool, and print statement
+     * If you do not have tool in your collection, function will not return tool and will print error statement
+     * @param tool the tool to be returned
+     * @param user_to the user to return the tool to
+     * @return true if the tool was successfully given back; false otherwise
+     */
+    public boolean returnTool(Tool tool, User user_to){
+        //check if the user_to owns this tool
+        if(user_to.getOwnedTools().contains(tool)){
+            //check if you have tool in your collection
+            if(this.getOwnedTools().contains(tool)){
+                this.removeFromCollection(tool);
+                user_to.addToCollection(tool);
+                //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
+                System.out.println("Tool " + tool.toString() + " was successfully returned to User "
+                                            + user_to.toString() + "by User " + this.toString());
+                return true;
+            } else {
+                System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
+                return false;
+            }
+        } else {
+            System.out.println("Unable to return Tool + " + tool.toString() + " because " +
+                    "User " + user_to.toString() + " does not own it");
+            return false;
+        }
+    }
+
+
 }
