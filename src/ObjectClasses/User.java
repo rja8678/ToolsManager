@@ -118,16 +118,48 @@ public class User {
     	return new LinkedList<Tool>(ownedTools.values());
     }
 
-    public void addToOwned(Tool tool){
-        this.ownedTools.put(tool.getToolID(), tool);
+    public boolean addToOwned(Tool tool){
+        int toolID = tool.getToolID();
+
+        try {
+            if(dbu.addToOwned(this.userID,toolID)) {
+                this.ownedTools.put(tool.getToolID(), tool);
+                return true;
+            }
+            else {
+                System.out.println("Failed to add tool "+ toolID +" to owner: " +this.userID);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("DB-FAILURE: Failed to add tool "+ toolID +" to owner: " +this.userID);
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
     public Tool getToolFromOwned(int toolID){
         return this.ownedTools.get(toolID);
     }
 
-    public void removeFromOwned(int toolID){
-        this.ownedTools.remove(toolID);
+    public boolean removeFromOwned(Tool tool){
+        int toolID = tool.getToolID();
+
+        try {
+            if(dbu.addToOwned(this.userID,toolID)) {
+                this.ownedTools.remove(toolID);
+                return true;
+            }
+            else {
+                System.out.println("Failed to remove tool "+ toolID +" from owner: " +this.userID);
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.out.println("DB-FAILURE: Failed to remove tool "+ toolID +" from owner: " +this.userID);
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 
 

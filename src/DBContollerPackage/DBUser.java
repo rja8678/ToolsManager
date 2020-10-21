@@ -153,4 +153,42 @@ public class DBUser {
         System.out.println("Operation done successfully");
         return true;
     }
+
+    public boolean addToOwned(int uid, int tid) {
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("INSERT INTO user_owns_tool VALUES (?,?)");
+            st.setInt(1, uid);
+            st.setInt(2, tid);
+            st.executeUpdate();
+
+            conn.getConn().commit();
+            st.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+//            System.exit(0);
+            return false;
+        }
+        System.out.println("Tool " + tid+ " added to user "+ uid + " owned tools");
+        return true;
+    }
+
+    public boolean removeFromOwned(int uid, int tid) {
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("DELETE FROM user_owns_tool WHERE iduser = ? AND idtool = ?");
+            st.setInt(1, uid);
+            st.setInt(2, tid);
+            st.executeUpdate();
+
+            conn.getConn().commit();
+            st.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+//            System.exit(0);
+            return false;
+        }
+        System.out.println("Operation done successfully");
+        return true;
+    }
 }
