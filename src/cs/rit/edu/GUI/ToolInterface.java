@@ -3,7 +3,10 @@ package cs.rit.edu.GUI;
 import cs.rit.edu.DBConn;
 import java.util.List;
 
+import DBContollerPackage.DBTool;
+import DBContollerPackage.DBUser;
 import ObjectClasses.Tool;
+import ObjectClasses.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +20,7 @@ import javafx.stage.Stage;
 
 public class ToolInterface extends Application{
 	VBox collectionList, ownedList;
+	static DBUser dbu;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -30,19 +34,24 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
                 String usernameInput = username.getText();
+                
+                System.out.println(Integer.parseInt(usernameInput));
+                User appUser = dbu.createUserObject(Integer.parseInt(usernameInput));
+                refreshToolCollection(appUser.getToolCollection());
+                refreshToolsOwned(appUser.getOwnedTools());
                 //TODO change this
-                String passwordInput = "fukee8lohx3ahga2Sahx";
-
-                if(usernameInput.isBlank() || passwordInput.isBlank()){
-                    System.out.println("Please enter valid credentials!");
-                }else{
-                    DBConn newConnection = new DBConn(usernameInput, passwordInput);
-                    if(newConnection.connected()){
-                        loginBtn.setText("Login Successful!");
-                        loginBtn.setDisable(true);
-
-                    }
-                }
+//                String passwordInput = "fukee8lohx3ahga2Sahx";
+//
+//                if(usernameInput.isBlank() || passwordInput.isBlank()){
+//                    System.out.println("Please enter valid credentials!");
+//                }else{
+//                    DBConn newConnection = new DBConn(usernameInput, passwordInput);
+//                    if(newConnection.connected()){
+//                        loginBtn.setText("Login Successful!");
+//                        loginBtn.setDisable(true);
+//
+//                    }
+//                }
 
                 System.out.println(username.getText());
 
@@ -154,6 +163,23 @@ public class ToolInterface extends Application{
 	}
 	
 	public static void main(String[] args) {
-		launch(args);
+		if(args.length > 1) {
+			String username = args[0];
+			String password = args[1];
+
+			DBConn conn = new DBConn(username, password);
+			dbu = new DBUser(conn);
+			DBTool dbt = new DBTool(conn);
+
+			User u1 = dbu.createUserObject(1);
+			System.out.println(u1.toString());
+
+			Tool t1 = dbt.fetchTool(1);
+			System.out.println(t1.toString());
+
+			launch(args);
+		}else {
+			System.out.println("Please give the database username and password as commandline arguments");
+		}
 	}
 }

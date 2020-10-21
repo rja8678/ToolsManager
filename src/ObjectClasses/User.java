@@ -1,6 +1,8 @@
 package ObjectClasses;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class User {
 
@@ -59,6 +61,13 @@ public class User {
         return this.ownedTools.size();
     }
 
+    public LinkedList<Tool> getToolCollection() {
+    	return new LinkedList<Tool>(toolCollection.values());
+    }
+    
+    public LinkedList<Tool> getOwnedTools() {
+    	return new LinkedList<Tool>(ownedTools.values());
+    }
 
     public void addToOwned(Tool tool){
         this.ownedTools.put(tool.getToolID(), tool);
