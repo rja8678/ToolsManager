@@ -20,9 +20,9 @@ public class Main {
 
 			// BELOW WORKS, UNCOMMENT TO LEND A TOOL FROM u1's collection to u2
 //			u1.lendTool(u1.getToolCollection().getFirst(), u2);
-//
-//			System.out.println("User1 Collection: " + u1.getToolCollection().toString());
-//			System.out.println("User2 Collection: " + u2.getToolCollection().toString());
+
+			System.out.println("User1 Collection: " + u1.getToolCollection().toString());
+			System.out.println("User2 Collection: " + u2.getToolCollection().toString());
 
 
 		}else {

@@ -182,20 +182,22 @@ public class User {
      *
      * @param tool the tool object
      * @param user_to the user to give the tool to
+     * @return boolean returns true if operation completed successfully.
      */
-    public void lendTool(Tool tool, User user_to){
+    public boolean lendTool(Tool tool, User user_to){
         //check if tool is owned by you and is currently in your possession
         if(this.ownedTools.containsKey(tool.getToolID())) {
             if (this.toolCollection.containsKey(tool.getToolID())) {
                 //then check if it is marked as lendable
                 if (tool.isLendable()) {
-                    this.removeFromCollection(tool);
-                    user_to.addToCollection(tool);
-
-                    //todo make a log object and store this transaction in db, also prob need 'return date' as a param
-
-                    //todo add a check if the tool being lent is owned by the person its going to (makes this function reusable for tool returns)
-
+                    if(this.removeFromCollection(tool) && user_to.addToCollection(tool)) {
+                        //todo make a log object and store this transaction in db, also prob need 'return date' as a param
+                        //todo add a check if the tool being lent is owned by the person its going to (makes this function reusable for tool returns)
+                        return true ;
+                    }
+                    else {
+                        System.out.println("Database failure.  Data might be broken.");
+                    }
                 } else {
                     System.out.println("Tool you own and have with id " + tool.getToolID() + " is not marked as lendable");
                 }
@@ -205,5 +207,6 @@ public class User {
         } else {
             System.out.println("Tool with id: " + tool.getToolID() + " is not owned by you, and cannot be lent");
         }
+        return false ;
     }
 }
