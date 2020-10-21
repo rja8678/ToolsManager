@@ -20,7 +20,9 @@ import javafx.stage.Stage;
 
 public class ToolInterface extends Application{
 	VBox collectionList, ownedList;
-	static DBUser dbu;
+
+    static User appUser = null ;
+    static DBConn conn = null ;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -36,7 +38,9 @@ public class ToolInterface extends Application{
                 String usernameInput = username.getText();
                 
                 System.out.println(Integer.parseInt(usernameInput));
-                User appUser = dbu.createUserObject(Integer.parseInt(usernameInput));
+
+                appUser = new User(Integer.parseInt(usernameInput), conn);
+
                 refreshToolCollection(appUser.getToolCollection());
                 refreshToolsOwned(appUser.getOwnedTools());
                 //TODO change this
@@ -167,15 +171,7 @@ public class ToolInterface extends Application{
 			String username = args[0];
 			String password = args[1];
 
-			DBConn conn = new DBConn(username, password);
-			dbu = new DBUser(conn);
-			DBTool dbt = new DBTool(conn);
-
-			User u1 = dbu.createUserObject(1);
-			System.out.println(u1.toString());
-
-			Tool t1 = dbt.fetchTool(1);
-			System.out.println(t1.toString());
+            conn = new DBConn(username, password);
 
 			launch(args);
 		}else {

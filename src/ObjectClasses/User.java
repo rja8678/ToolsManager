@@ -1,5 +1,8 @@
 package ObjectClasses;
 
+import DBContollerPackage.DBUser;
+import cs.rit.edu.DBConn;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,6 +31,19 @@ public class User {
         this.toolCollection = toolCollection;
         this.ownedTools = ownedTools;
     }
+
+    public User (int id, DBConn conn) {
+        DBUser dbu = new DBUser(conn) ;
+
+        User t = dbu.createUserObject(id);
+
+        this.userID = t.userID;
+        this.firstName = t.firstName;
+        this.lastName = t.lastName;
+        this.toolCollection = t.toolCollection;
+        this.ownedTools = t.ownedTools;
+    }
+
 
     public int getUserID() {
         return userID;
