@@ -1,5 +1,8 @@
 package cs.rit.edu.GUI;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import ObjectClasses.Tool;
@@ -11,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -20,10 +24,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ToolInterface extends Application{
-	VBox collectionList, ownedList;
 
     static User appUser = null ;
     static DBConn conn = null ;
+    
+    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -77,8 +82,25 @@ public class ToolInterface extends Application{
         //Collection in the center
         HBox toolLists = new HBox();
         
-        collectionList = new VBox();
-        ownedList = new VBox();
+        
+        HBox collectionList = new HBox();
+        HBox ownedList = new HBox();
+        
+        //Creating columns for the collection
+        collectionToolName = new VBox();
+        collectionPurchaseDate = new VBox();
+        
+        collectionList.getChildren().add(collectionToolName);
+        collectionList.getChildren().add(collectionPurchaseDate);
+        
+        //Creating columns for the owned tools section
+        ownedToolName = new VBox();
+        ownedPurchaseDate = new VBox();
+        ownedLendable = new VBox();
+        
+        ownedList.getChildren().add(ownedToolName);
+        ownedList.getChildren().add(ownedPurchaseDate);
+        ownedList.getChildren().add(ownedLendable);
         
         toolLists.getChildren().add(collectionList);
         toolLists.getChildren().add(ownedList);
@@ -93,6 +115,31 @@ public class ToolInterface extends Application{
         
         Label toolPurchaseLabel = new Label("Date Purchased: ");
         DatePicker toolPurchaseDate = new DatePicker();
+
+
+        HBox toolPurchase = new HBox();
+        toolPurchase.getChildren().add(toolPurchaseLabel);
+        toolPurchase.getChildren().add(toolPurchaseDate);
+        
+        //Tool Types Checkboxes
+        HBox listOfTypes = new HBox();
+        VBox toolTypeName = new VBox();
+        VBox checkBoxes = new VBox();
+        
+        listOfTypes.getChildren().add(toolTypeName);
+        listOfTypes.getChildren().add(checkBoxes);
+        
+        List<String> toolTypes = conn.fetchAllToolTypes();
+        List<CheckBox> selectedToolTypes = new ArrayList<>();
+        
+        for(String toolType: toolTypes) {
+        	Label toolTypeLabel = new Label(toolType);
+        	toolTypeName.getChildren().add(toolTypeLabel);
+        	
+        	CheckBox checkBox = new CheckBox();
+        	checkBoxes.getChildren().add(checkBox);
+        	selectedToolTypes.add(checkBox);
+        }
         
         Button createTool = new Button();
         createTool.setText("Create Tool");
@@ -101,17 +148,23 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Create tool");
-                //TODO Create new tool here and update database
+                Iterator<String> toolTypesI = toolTypes.iterator();
+                Iterator<CheckBox> selectedToolTypesI = selectedToolTypes.iterator();
+                LinkedList<String> output = new LinkedList<>();
+                while(toolTypesI.hasNext()) {
+                	if (selectedToolTypesI.next().isSelected()) {
+                		output.add(toolTypesI.next());
+                	}
+                }
+                
+                //TODO Create the tool on the database
             }
         });
-
-
-        HBox toolPurchase = new HBox();
-        toolPurchase.getChildren().add(toolPurchaseLabel);
-        toolPurchase.getChildren().add(toolPurchaseDate);
         
         toolCreation.getChildren().add(toolName);
         toolCreation.getChildren().add(toolPurchase);
+        toolCreation.getChildren().add(listOfTypes);
+        toolCreation.getChildren().add(createTool);
         
         
         BorderPane pane = new BorderPane();
@@ -127,7 +180,6 @@ public class ToolInterface extends Application{
         stage.show();
     }
 	
-	//TODO Run this once user is logged in or the collection for the user has changed
 	/**
 	 * Displays a list of tools for the user representing their collection
 	 * @param tools List of tools to display
@@ -136,18 +188,12 @@ public class ToolInterface extends Application{
 		for (Tool tool: tools) {
 			Label toolName = new Label(tool.getToolName());
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
-//			Label lendable = new Label((tool.isLendable() ? "True": "False"));
-
-			HBox toolEntry = new HBox();
-			toolEntry.getChildren().add(toolName);
-			toolEntry.getChildren().add(purchaseDate);
-//			toolEntry.getChildren().add(lendable);
-
-			collectionList.getChildren().add(toolEntry);
+			
+			collectionToolName.getChildren().add(toolName);
+			collectionPurchaseDate.getChildren().add(purchaseDate);
 		}
 	}
 	
-	//TODO Run this once user is logged in or the collection for the user has changed
 	/**
 	 * Displays a list of tools for the user representing their owned tools
 	 * @param tools List of tools to display
@@ -158,12 +204,9 @@ public class ToolInterface extends Application{
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
 			Label lendable = new Label((tool.isLendable() ? "True": "False"));
 
-			HBox toolEntry = new HBox();
-			toolEntry.getChildren().add(toolName);
-			toolEntry.getChildren().add(purchaseDate);
-			toolEntry.getChildren().add(lendable);
-
-			ownedList.getChildren().add(toolEntry);
+			ownedToolName.getChildren().add(toolName);
+			ownedPurchaseDate.getChildren().add(purchaseDate);
+			ownedLendable.getChildren().add(lendable);
 		}
 	}
 	
