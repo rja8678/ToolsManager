@@ -14,7 +14,6 @@ public class DBTool {
     }
 
     public Tool fetchTool(int toolID){
-        Statement stmt = null;
         String name = null;
         boolean lendable = false;
         Date purchaseDate = null;
@@ -24,7 +23,6 @@ public class DBTool {
             return null;
         }
         try {
-            stmt = dbConn.getConn().createStatement();
             PreparedStatement st = dbConn.getConn().prepareStatement("SELECT * FROM tool WHERE idtool = ?");
             st.setInt(1, toolID);
             ResultSet rs = st.executeQuery();
@@ -35,7 +33,7 @@ public class DBTool {
                 purchaseDate = rs.getDate("purchase_date");
             }
             rs.close();
-            stmt.close();
+            st.close();
 
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
