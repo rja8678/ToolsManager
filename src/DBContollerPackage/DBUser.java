@@ -1,13 +1,12 @@
 package DBContollerPackage;
 
+import ObjectClasses.ActionType;
+import ObjectClasses.LendingLog;
 import ObjectClasses.Tool;
 import ObjectClasses.User;
 import cs.rit.edu.DBConn;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -187,5 +186,91 @@ public class DBUser {
         }
         System.out.println("Operation done successfully");
         return true;
+    }
+
+    public int insertLendingLog(Date logDate, ActionType action, Date returnDate, int toolID, int toUserID, int fromUserID) {
+        int logid = -1;
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("INSERT INTO lendinglog (log_date, action, return_date) VALUES (?,?,?) RETURNING idlog");
+
+            st.setDate(1, logDate);
+            st.setInt(2, action.getDatabaseValue());
+            st.setDate(3, returnDate);
+
+            ResultSet rs = st.executeQuery();
+            rs.next();
+
+            logid = rs.getInt(1);
+            st.close();
+            rs.close();
+
+            PreparedStatement inner_st = conn.getConn().prepareStatement("INSERT INTO log_relation (to_iduser, from_iduser, idtool, idlog) VALUES (?,?,?,?)");
+            inner_st.setInt(1, toUserID);
+            inner_st.setInt(2, fromUserID);
+            inner_st.setInt(3, toolID);
+            inner_st.setInt(4, logid);
+            inner_st.executeUpdate();
+            inner_st.close();
+
+            conn.getConn().commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to insert new log");
+        }
+        return logid;
+    }
+
+    public LendingLog fetchLendingLog(int logid) {
+        LendingLog log = null;
+        Date logDate = null;
+        int action = -1;
+        Date returnDate = null;
+
+        int toUser = -1;
+        int fromUser = -1;
+        int idtool = -1 ;
+
+        try {
+            PreparedStatement st = conn.getConn().prepareStatement("SELECT * FROM lendinglog WHERE idlog = ?");
+            st.setInt(1, logid);
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                logDate = rs.getDate("log_date");
+                action = rs.getInt("action");
+                returnDate = rs.getDate("return_date");
+            }
+            rs.close();
+            st.close();
+
+            PreparedStatement inner_st = conn.getConn().prepareStatement("SELECT * FROM log_relation WHERE idlog = ?");
+            inner_st.setInt(1, logid);
+            ResultSet result = inner_st.executeQuery();
+
+            while ( result.next() ) {
+                toUser = result.getInt("to_iduser");
+                fromUser = result.getInt("from_iduser");
+                idtool = result.getInt("idtool");
+            }
+            result.close();
+            inner_st.close();
+
+            ActionType at;
+
+            if(action == 0) {
+                at = ActionType.Lend;
+            }
+            else {
+                at = ActionType.Return;
+            }
+
+            log = new LendingLog(logid, logDate, at, returnDate, idtool, toUser, fromUser);
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch log: " + logid);
+            e.printStackTrace();
+        }
+        return log;
     }
 }

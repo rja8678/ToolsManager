@@ -10,6 +10,7 @@ INSERT INTO tool (name, lendable, purchase_date) VALUES ('Bosch PS31-2A 12-Volt 
 INSERT INTO tooltype (idtool_type, type_name) VALUES (1, 'power');
 INSERT INTO tooltype (idtool_type, type_name) VALUES (2, 'saw');
 INSERT INTO tooltype (idtool_type, type_name) VALUES (3, 'drill');
+INSERT INTO tooltype (idtool_type, type_name) VALUES (4, 'hammer');
 
 INSERT INTO tool_tooltype VALUES (1,1);
 INSERT INTO tool_tooltype VALUES (1,2);

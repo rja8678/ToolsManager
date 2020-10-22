@@ -1,6 +1,7 @@
 package ObjectClasses;
 
 import DBContollerPackage.DBUser;
+import cs.rit.edu.DBConn;
 
 import java.sql.Date;
 
@@ -12,7 +13,7 @@ import java.sql.Date;
  */
 public class LendingLog {
 
-    //private DBLL dbll = null; todo uncomment when DBLL is made
+//    private DBLL dbll = null;
     //unique integer associated with this log
     private int logID;
     //the date the log was created
@@ -47,7 +48,7 @@ public class LendingLog {
     /**
      * alternative constructor for a Log
      * This constructor is used when the Application generates a new log and needs to file in inside the database
-     * @param conn the connection to the database
+     * @param dbu the connection to the database
      * @param logDate the date the log was generated at
      * @param action the type of action this log is
      * @param returnDate the date the tool needs to be returned to
@@ -55,36 +56,42 @@ public class LendingLog {
      * @param toUserID the unique sending user id
      * @param fromUserID the unique receiving user id
      */
-    public LendingLog(DBUser conn, Date logDate, ActionType action, Date returnDate, int toolID, int toUserID, int fromUserID){
+    public LendingLog(DBUser dbu, Date logDate, ActionType action, Date returnDate, int toolID, int toUserID, int fromUserID){
         //todo make proper DB connection and do stuff
+        int newId = dbu.insertLendingLog(logDate, action, returnDate, toolID, toUserID, fromUserID);
 
-        this.logDate = logDate;
-        this.action = action;
-        this.returnDate = returnDate;
-        this.toolID = toolID;
-        this.toUserID = toUserID;
-        this.fromUserID = fromUserID;
+        LendingLog temp = dbu.fetchLendingLog(newId);
+
+        this.logDate = temp.getLogDate();
+        this.action = temp.getAction();
+        this.returnDate = temp.getReturnDate();
+        this.toolID = temp.getToolID();
+        this.toUserID = temp.getToUserID();
+        this.fromUserID = temp.getFromUserID();
     }
 
-    /*
+
     /**
      * Constructor for relieving a Lending Log from the database
      * TODO needs a DBLL to handle database connections before this will work
      *
      * @param id unique ID identifying this log
-     * @param conn the connection to the ID
-     *//*
-    public LendingLog(int id, DBConn conn){
-        DBLL dbll = new DBLL(conn);
+     * @param dbu the connection to the user db
+     */
+    public LendingLog(int id, DBUser dbu){
 
-        LendingLog log = dbll.createLendingLog(id);
+        LendingLog log = dbu.fetchLendingLog(id);
 
         this.logID = log.getLogID();
         this.logDate = log.getReturnDate();
         this.action = log.getAction();
         this.returnDate = log.getReturnDate();
+
+        this.fromUserID = log.getFromUserID();
+        this.toUserID = log.getToUserID();
+        this.toolID = log.getToolID();
     }
-    */
+
 
 
     public int getLogID() {
