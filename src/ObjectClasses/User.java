@@ -4,6 +4,7 @@ import DBContollerPackage.DBUser;
 import cs.rit.edu.DBConn;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -172,7 +173,9 @@ public class User {
         }
     }
 
-
+    public ArrayList<LendingLog> getLendingLogs() {
+        return this.dbu.fetchUserLogs(this.userID) ;
+    }
 
     /**
      * returns a String in Tuple form represetning this user

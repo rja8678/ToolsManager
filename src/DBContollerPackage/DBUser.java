@@ -273,4 +273,27 @@ public class DBUser {
         }
         return log;
     }
+
+    public ArrayList<LendingLog> fetchUserLogs(int uid) {
+        ArrayList<LendingLog> logSet = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = conn.getConn().prepareStatement("SELECT idlog FROM log_relation WHERE from_iduser = ? OR to_iduser = ?");
+            stmt.setInt(1, uid);
+            stmt.setInt(2, uid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                logSet.add(this.fetchLendingLog(rs.getInt(1)));
+            }
+
+            System.out.println("Successfully returned list of 'LendingLog' related to user: " + uid);
+
+        } catch (Exception e) {
+            System.out.println("Failed to pull user logs from DB.");
+            e.printStackTrace();
+        }
+
+        return logSet ;
+    }
 }
