@@ -1,6 +1,10 @@
 package ObjectClasses;
 
 
+import DBContollerPackage.DBTool;
+import DBContollerPackage.DBUser;
+import cs.rit.edu.DBConn;
+
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -31,6 +35,31 @@ public class Tool {
         this.purchaseDate = purchaseDate;
         this.lendable = lendable;
         this.toolTypes = toolTypes;
+    }
+
+    public Tool (int toolID, DBConn conn) {
+        DBTool dbt = new DBTool(conn) ;
+
+        Tool t = dbt.fetchTool(toolID);
+
+        this.toolID = t.toolID;
+        this.toolName = t.toolName;
+        this.purchaseDate = t.purchaseDate;
+        this.lendable = t.lendable;
+        this.toolTypes = t.toolTypes;
+    }
+
+    public Tool (String toolName, Date purchaseDate, boolean lendable, ArrayList<Integer> toolTypes, DBConn conn) {
+        DBTool dbt = new DBTool(conn);
+
+        int newToolId = dbt.insertNewTool(toolName, purchaseDate, lendable, toolTypes);
+        Tool t = new Tool(newToolId, conn);
+
+        this.toolID = t.toolID;
+        this.toolName = t.toolName;
+        this.purchaseDate = t.purchaseDate;
+        this.lendable = t.lendable;
+        this.toolTypes = t.toolTypes;
     }
 
     public int getToolID(){

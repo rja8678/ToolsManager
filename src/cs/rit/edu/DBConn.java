@@ -1,7 +1,11 @@
 package cs.rit.edu;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import DBContollerPackage.DBTool;
+import ObjectClasses.Tool;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DBConn {
     Connection c = null ;
@@ -46,5 +50,56 @@ public class DBConn {
             System.out.println("Database is already connected.");
             return null;
         }
+    }
+
+    public HashMap<Integer, String> fetchAllToolTypes() {
+        Statement stmt = null;
+        HashMap<Integer, String> types = new HashMap<>() ;
+
+        if(!connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            stmt = this.getConn().createStatement();
+            PreparedStatement st = this.getConn().prepareStatement("SELECT idtool_type, type_name FROM tooltype");
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                types.put(rs.getInt("idtool_type"),rs.getString("type_name"));
+            }
+            rs.close();
+            stmt.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("All tool types pulled from database.");
+        return types;
+    }
+
+    public HashMap<Integer, String> fetchAllUsers() {
+        HashMap<Integer, String> users = new HashMap<>() ;
+
+        if(!this.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = this.getConn().prepareStatement("SELECT * from \"user\"");
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                users.put(rs.getInt("iduser"), rs.getString("fname") + " " +rs.getString("lname"));
+            }
+            rs.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+
+        System.out.println("Users where fetched from DB successfully");
+        return users;
     }
 }

@@ -83,7 +83,6 @@ public class DBUser {
     }
 
     public HashMap<Integer, Tool> fetchUserOwnedTools(int id) {
-        Statement stmt = null;
         ArrayList<Integer> toolids = new ArrayList<>() ;
         HashMap<Integer, Tool> collection = new HashMap<>() ;
 
@@ -92,7 +91,6 @@ public class DBUser {
             return null;
         }
         try {
-            stmt = conn.getConn().createStatement();
             PreparedStatement st = conn.getConn().prepareStatement("SELECT idtool from user_owns_tool where iduser = ?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
@@ -101,7 +99,6 @@ public class DBUser {
                 toolids.add(rs.getInt("idtool"));
             }
             rs.close();
-            stmt.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
