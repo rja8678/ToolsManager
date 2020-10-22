@@ -7,6 +7,11 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * Object that stores User data and methods, including functionality for lending and returning tools
+ *
+ * @author asn3371
+ */
 public class User {
 
     private DBUser dbu = null;
@@ -176,6 +181,13 @@ public class User {
     @Override
     public String toString() {
         return "{userID: " + userID + ", firstName: " + this.firstName + ", lastName: " + this.lastName + ", OwnedTools: " + this.ownedTools.toString() +", Collection: "+ this.toolCollection.toString() +"}";
+    }
+
+    /**
+     * Alternative toString that presents the User in a nicer format
+     */
+    public String betterToString(){
+        return "" + firstName + " " + lastName;
     }
 
 

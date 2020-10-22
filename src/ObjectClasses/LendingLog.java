@@ -1,7 +1,6 @@
 package ObjectClasses;
 
 import DBContollerPackage.DBUser;
-import cs.rit.edu.DBConn;
 
 import java.sql.Date;
 
