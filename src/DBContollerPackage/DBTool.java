@@ -87,7 +87,6 @@ public class DBTool {
             rs.next();
 
             toolid = rs.getInt(1);
-            System.out.println("***** NEW TOOL ID: " + toolid + " *****");
             st.close();
             rs.close();
 

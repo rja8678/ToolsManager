@@ -52,7 +52,8 @@ public class Tool {
     public Tool (String toolName, Date purchaseDate, boolean lendable, ArrayList<Integer> toolTypes, DBConn conn) {
         DBTool dbt = new DBTool(conn);
 
-        Tool t = new Tool(dbt.insertNewTool(toolName, purchaseDate, lendable, toolTypes), conn) ;
+        int newToolId = dbt.insertNewTool(toolName, purchaseDate, lendable, toolTypes);
+        Tool t = new Tool(newToolId, conn);
 
         this.toolID = t.toolID;
         this.toolName = t.toolName;
