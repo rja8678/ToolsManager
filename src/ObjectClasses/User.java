@@ -247,7 +247,7 @@ public class User {
                 //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
 
                 //todo use this log to make proper database update
-                LendingLog newLog = new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
+                new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
                         ActionType.Return, null, tool.getToolID(), user_to.getUserID(), this.getUserID());
 
                 System.out.println("Tool " + tool.toString() + " was successfully returned to User "
