@@ -52,9 +52,9 @@ public class DBConn {
         }
     }
 
-    public ArrayList<String> fetchAllToolTypes() {
+    public HashMap<Integer, String> fetchAllToolTypes() {
         Statement stmt = null;
-        ArrayList<String> types = new ArrayList<>() ;
+        HashMap<Integer, String> types = new HashMap<>() ;
 
         if(!connected()) {
             System.out.println("System not connected.");
@@ -62,11 +62,11 @@ public class DBConn {
         }
         try {
             stmt = this.getConn().createStatement();
-            PreparedStatement st = this.getConn().prepareStatement("SELECT type_name FROM tooltype");
+            PreparedStatement st = this.getConn().prepareStatement("SELECT idtool_type, type_name FROM tooltype");
             ResultSet rs = st.executeQuery();
 
             while ( rs.next() ) {
-                types.add(rs.getString("type_name"));
+                types.put(rs.getInt("idtool_type"),rs.getString("type_name"));
             }
             rs.close();
             stmt.close();
