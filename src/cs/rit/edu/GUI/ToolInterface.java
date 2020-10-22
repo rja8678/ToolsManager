@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -29,7 +30,13 @@ public class ToolInterface extends Application{
     static DBConn conn = null ;
     
     VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable;
-	
+    HBox collectionList, ownedList;
+    
+    @Override
+    public void stop() {
+    	conn.closeConn();
+    }
+    
 	@Override
 	public void start(Stage stage) throws Exception {
 		TextField username = new TextField();
@@ -63,8 +70,6 @@ public class ToolInterface extends Application{
 //                    }
 //                }
 
-                System.out.println(username.getText());
-
             }
         });
 
@@ -82,27 +87,13 @@ public class ToolInterface extends Application{
         //Collection in the center
         HBox toolLists = new HBox();
         
+        collectionList = new HBox();
+        ownedList = new HBox();
         
-        HBox collectionList = new HBox();
-        HBox ownedList = new HBox();
-        
-        //Creating columns for the collection
-        collectionToolName = new VBox();
-        collectionPurchaseDate = new VBox();
-        
-        collectionList.getChildren().add(collectionToolName);
-        collectionList.getChildren().add(collectionPurchaseDate);
-        
-        //Creating columns for the owned tools section
-        ownedToolName = new VBox();
-        ownedPurchaseDate = new VBox();
-        ownedLendable = new VBox();
-        
-        ownedList.getChildren().add(ownedToolName);
-        ownedList.getChildren().add(ownedPurchaseDate);
-        ownedList.getChildren().add(ownedLendable);
+        createCollections();
         
         toolLists.getChildren().add(collectionList);
+        toolLists.getChildren().add(new Separator());
         toolLists.getChildren().add(ownedList);
         
         VBox toolCreation = new VBox();
@@ -179,6 +170,34 @@ public class ToolInterface extends Application{
         stage.setScene(scene);
         stage.show();
     }
+	
+	public void createCollections() {
+        
+		//Creating columns for the collection
+        collectionToolName = new VBox();
+        collectionToolName.getChildren().add(new Label("Tool Names"));
+        collectionPurchaseDate = new VBox();
+        collectionPurchaseDate.getChildren().add(new Label("Purchase Dates"));
+        
+        //Creating columns for the owned tools section
+        ownedToolName = new VBox();
+        ownedToolName.getChildren().add(new Label("Tool Names"));
+        ownedPurchaseDate = new VBox();
+        ownedPurchaseDate.getChildren().add(new Label("Purchase Dates"));
+        ownedLendable = new VBox();
+        ownedLendable.getChildren().add(new Label("Lendability"));
+        
+        collectionList.getChildren().add(collectionToolName);
+        collectionList.getChildren().add(new Separator());
+        collectionList.getChildren().add(collectionPurchaseDate);
+        
+        ownedList.getChildren().add(ownedToolName);
+        ownedList.getChildren().add(new Separator());
+        ownedList.getChildren().add(ownedPurchaseDate);
+        ownedList.getChildren().add(new Separator());
+        ownedList.getChildren().add(ownedLendable);
+        
+	}
 	
 	/**
 	 * Displays a list of tools for the user representing their collection
