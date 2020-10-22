@@ -114,4 +114,20 @@ public class LendingLog {
     public int getFromUserID() {
         return fromUserID;
     }
+
+    /**
+     * returns a tuple congaing the relevant data contained within this LendingLog
+     * @return string containing this. ... variable info
+     */
+    @Override
+    public String toString() {
+        return "{logID : " + this.logID + "" +
+                " userToID: " + this.toUserID +
+                ", userFromID: " + this.fromUserID +
+                ", toolID: " + this.toolID +
+                ", logDate + " + this.logDate.toString() +
+                ", returnDate " + this.returnDate.toString() +
+                ", actionType: " + this.action +
+                "}";
+    }
 }
