@@ -33,8 +33,6 @@ public class Tool {
         this.toolTypes = toolTypes;
     }
 
-
-
     public int getToolID(){
         return this.toolID;
     }
@@ -57,7 +55,7 @@ public class Tool {
 
     /**
      * returns String in tuple format representing this tool
-     * @return
+     * @return tuple of this tool in string format
      */
     @Override
     public String toString() {
