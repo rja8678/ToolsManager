@@ -201,10 +201,10 @@ public class ToolInterface extends Application{
         listOfTypes.getChildren().add(toolTypeName);
         listOfTypes.getChildren().add(checkBoxes);
         
-        List<String> toolTypes = conn.fetchAllToolTypes();
+        HashMap<Integer, String> toolTypes = conn.fetchAllToolTypes();
         List<CheckBox> selectedToolTypes = new ArrayList<>();
         
-        for(String toolType: toolTypes) {
+        for(String toolType: toolTypes.values()) {
         	Label toolTypeLabel = new Label(toolType);
         	toolTypeName.getChildren().add(toolTypeLabel);
         	
@@ -220,7 +220,8 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Create tool");
-                Iterator<String> toolTypesI = toolTypes.iterator();
+                //TODO Change
+                Iterator<String> toolTypesI = toolTypes.values().iterator();
                 Iterator<CheckBox> selectedToolTypesI = selectedToolTypes.iterator();
                 LinkedList<String> output = new LinkedList<>();
                 while(toolTypesI.hasNext()) {
