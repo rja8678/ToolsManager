@@ -3,10 +3,15 @@ package ObjectClasses;
 import DBContollerPackage.DBUser;
 import cs.rit.edu.DBConn;
 
-import java.util.Collection;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * Object that stores User data and methods, including functionality for lending and returning tools
+ *
+ * @author asn3371
+ */
 public class User {
 
     private DBUser dbu = null;
@@ -22,7 +27,7 @@ public class User {
     private HashMap<Integer, Tool> ownedTools;
 
     /**
-     * temp constructor for user object. just for testing purposes before database implementation
+     * Constructor used by the DBUser to create a user object. This should not be filled with any data except
      */
     public User(int userID, String firstName, String lastName,
                 HashMap<Integer, Tool> toolCollection, HashMap<Integer, Tool> ownedTools){
@@ -34,6 +39,11 @@ public class User {
         this.ownedTools = ownedTools;
     }
 
+    /**
+     * constructor for retrieving a User object from the database based on ID
+     * @param id the unique id identifying the user
+     * @param conn the connection to the database
+     */
     public User (int id, DBConn conn) {
         DBUser dbu = new DBUser(conn) ;
 
@@ -173,6 +183,13 @@ public class User {
         return "{userID: " + userID + ", firstName: " + this.firstName + ", lastName: " + this.lastName + ", OwnedTools: " + this.ownedTools.toString() +", Collection: "+ this.toolCollection.toString() +"}";
     }
 
+    /**
+     * Alternative toString that presents the User in a nicer format
+     */
+    public String betterToString(){
+        return "" + firstName + " " + lastName;
+    }
+
 
     /**
      * Handles lending a tool out to another user. You must own the tool, have it in your
@@ -184,7 +201,7 @@ public class User {
      * @param user_to the user to give the tool to
      * @return boolean returns true if operation completed successfully.
      */
-    public boolean lendTool(Tool tool, User user_to){
+    public boolean lendTool(Tool tool, User user_to, Date returnDate){
         //check if tool is owned by you and is currently in your possession
         if(this.ownedTools.containsKey(tool.getToolID())) {
             if (this.toolCollection.containsKey(tool.getToolID())) {
@@ -192,7 +209,9 @@ public class User {
                 if (tool.isLendable()) {
                     if(this.removeFromCollection(tool) && user_to.addToCollection(tool)) {
                         //todo make a log object and store this transaction in db, also prob need 'return date' as a param
-                        //todo add a check if the tool being lent is owned by the person its going to (makes this function reusable for tool returns)
+                        LendingLog log = new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
+                                ActionType.Lend, returnDate, tool.getToolID(), user_to.getUserID(), this.userID);
+                        //todo make sure that this new log object is properly filed in database
                         return true ;
                     }
                     else {
@@ -209,4 +228,42 @@ public class User {
         }
         return false ;
     }
+
+
+    /**
+     * Function that returns a given tool from this User's collection back to a given user who owns it
+     * If user_to does not actually own the tool, then function will fail to return tool, and print statement
+     * If you do not have tool in your collection, function will not return tool and will print error statement
+     * @param tool the tool to be returned
+     * @param user_to the user to return the tool to
+     * @return true if the tool was successfully given back; false otherwise
+     */
+    public boolean returnTool(Tool tool, User user_to){
+        //check if the user_to owns this tool
+        if(user_to.getOwnedTools().contains(tool)){
+            //check if you have tool in your collection
+            if(this.getOwnedTools().contains(tool)){
+                this.removeFromCollection(tool);
+                user_to.addToCollection(tool);
+                //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
+
+                //todo use this log to make proper database update
+                LendingLog newLog = new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
+                        ActionType.Return, null, tool.getToolID(), user_to.getUserID(), this.getUserID());
+
+                System.out.println("Tool " + tool.toString() + " was successfully returned to User "
+                                            + user_to.toString() + "by User " + this.toString());
+                return true;
+            } else {
+                System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
+                return false;
+            }
+        } else {
+            System.out.println("Unable to return Tool + " + tool.toString() + " because " +
+                    "User " + user_to.toString() + " does not own it");
+            return false;
+        }
+    }
+
+
 }
