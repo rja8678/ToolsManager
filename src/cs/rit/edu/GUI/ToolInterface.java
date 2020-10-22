@@ -1,6 +1,7 @@
 package cs.rit.edu.GUI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,12 +10,14 @@ import ObjectClasses.Tool;
 import ObjectClasses.User;
 import cs.rit.edu.DBConn;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -29,7 +32,7 @@ public class ToolInterface extends Application{
     static User appUser = null ;
     static DBConn conn = null ;
     
-    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable;
+    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane;
     HBox collectionList, ownedList;
     
     @Override
@@ -56,20 +59,7 @@ public class ToolInterface extends Application{
 
                 refreshToolCollection(appUser.getToolCollection());
                 refreshToolsOwned(appUser.getOwnedTools());
-                //TODO change this
-//                String passwordInput = "fukee8lohx3ahga2Sahx";
-//
-//                if(usernameInput.isBlank() || passwordInput.isBlank()){
-//                    System.out.println("Please enter valid credentials!");
-//                }else{
-//                    DBConn newConnection = new DBConn(usernameInput, passwordInput);
-//                    if(newConnection.connected()){
-//                        loginBtn.setText("Login Successful!");
-//                        loginBtn.setDisable(true);
-//
-//                    }
-//                }
-
+                lendingPaneInit();
             }
         });
 
@@ -96,74 +86,18 @@ public class ToolInterface extends Application{
         toolLists.getChildren().add(new Separator());
         toolLists.getChildren().add(ownedList);
         
-        VBox toolCreation = new VBox();
-        Label toolNameLabel = new Label("Tool Name: ");
-        TextField toolNameEntry = new TextField();
+        VBox toolCreation = toolCreationMenu();
         
-        HBox toolName = new HBox();
-        toolName.getChildren().add(toolNameLabel);
-        toolName.getChildren().add(toolNameEntry);
-        
-        Label toolPurchaseLabel = new Label("Date Purchased: ");
-        DatePicker toolPurchaseDate = new DatePicker();
-
-
-        HBox toolPurchase = new HBox();
-        toolPurchase.getChildren().add(toolPurchaseLabel);
-        toolPurchase.getChildren().add(toolPurchaseDate);
-        
-        //Tool Types Checkboxes
-        HBox listOfTypes = new HBox();
-        VBox toolTypeName = new VBox();
-        VBox checkBoxes = new VBox();
-        
-        listOfTypes.getChildren().add(toolTypeName);
-        listOfTypes.getChildren().add(checkBoxes);
-        
-        List<String> toolTypes = conn.fetchAllToolTypes();
-        List<CheckBox> selectedToolTypes = new ArrayList<>();
-        
-        for(String toolType: toolTypes) {
-        	Label toolTypeLabel = new Label(toolType);
-        	toolTypeName.getChildren().add(toolTypeLabel);
-        	
-        	CheckBox checkBox = new CheckBox();
-        	checkBoxes.getChildren().add(checkBox);
-        	selectedToolTypes.add(checkBox);
-        }
-        
-        Button createTool = new Button();
-        createTool.setText("Create Tool");
-        createTool.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Create tool");
-                Iterator<String> toolTypesI = toolTypes.iterator();
-                Iterator<CheckBox> selectedToolTypesI = selectedToolTypes.iterator();
-                LinkedList<String> output = new LinkedList<>();
-                while(toolTypesI.hasNext()) {
-                	if (selectedToolTypesI.next().isSelected()) {
-                		output.add(toolTypesI.next());
-                	}
-                }
-                
-                //TODO Create the tool on the database
-            }
-        });
-        
-        toolCreation.getChildren().add(toolName);
-        toolCreation.getChildren().add(toolPurchase);
-        toolCreation.getChildren().add(listOfTypes);
-        toolCreation.getChildren().add(createTool);
-        
+        lendPane = new VBox();
+        Label lendPaneLabel = new Label("Lending");
+        lendPane.getChildren().add(lendPaneLabel);
         
         BorderPane pane = new BorderPane();
         pane.setTop(login);
         pane.setCenter(toolLists);
         pane.setLeft(toolCreation);
+        pane.setRight(lendPane);
         
-
         Scene scene = new Scene(pane, 300, 250);
 
         stage.setTitle("Tool Interface");
@@ -211,6 +145,101 @@ public class ToolInterface extends Application{
 			collectionToolName.getChildren().add(toolName);
 			collectionPurchaseDate.getChildren().add(purchaseDate);
 		}
+	}
+	
+	public void lendingPaneInit() {
+		LinkedList<Tool> ownedTools = appUser.getOwnedTools();
+        ArrayList<String> toolNames = new ArrayList<>();
+        for (Tool tool: ownedTools) {
+        	toolNames.add(tool.getToolName());
+        }
+        
+        HashMap<Integer, String> allUsers = conn.fetchAllUsers();
+        
+        ArrayList<String> usersNames = new ArrayList<>();
+        for (Integer userID: allUsers.keySet()) {
+        	usersNames.add(allUsers.get(userID)+" "+userID);
+        }
+        
+        ComboBox<String> toolsDrop = new ComboBox<String>(FXCollections.observableArrayList(toolNames));
+        ComboBox<String> usersDrop = new ComboBox<String>(FXCollections.observableArrayList(usersNames));
+        
+        lendPane.getChildren().add(toolsDrop);
+        lendPane.getChildren().add(usersDrop);
+	}
+	
+	public VBox toolCreationMenu() {
+		VBox toolCreation = new VBox();
+        Label toolNameLabel = new Label("Tool Name: ");
+        TextField toolNameEntry = new TextField();
+        
+        HBox toolName = new HBox();
+        toolName.getChildren().add(toolNameLabel);
+        toolName.getChildren().add(toolNameEntry);
+        
+        Label toolPurchaseLabel = new Label("Date Purchased: ");
+        DatePicker toolPurchaseDate = new DatePicker();
+
+        
+        HBox toolPurchase = new HBox();
+        toolPurchase.getChildren().add(toolPurchaseLabel);
+        toolPurchase.getChildren().add(toolPurchaseDate);
+        
+        Label lendableToolLabel = new Label("Is Tool Lendable: ");
+        CheckBox lendableToolCheck = new CheckBox();
+        
+        HBox lendableTool = new HBox();
+        lendableTool.getChildren().add(lendableToolLabel);
+        lendableTool.getChildren().add(lendableToolCheck);
+        
+        
+        //Tool Types Checkboxes
+        HBox listOfTypes = new HBox();
+        VBox toolTypeName = new VBox();
+        VBox checkBoxes = new VBox();
+        
+        listOfTypes.getChildren().add(toolTypeName);
+        listOfTypes.getChildren().add(checkBoxes);
+        
+        List<String> toolTypes = conn.fetchAllToolTypes();
+        List<CheckBox> selectedToolTypes = new ArrayList<>();
+        
+        for(String toolType: toolTypes) {
+        	Label toolTypeLabel = new Label(toolType);
+        	toolTypeName.getChildren().add(toolTypeLabel);
+        	
+        	CheckBox checkBox = new CheckBox();
+        	checkBoxes.getChildren().add(checkBox);
+        	selectedToolTypes.add(checkBox);
+        }
+        
+        Button createTool = new Button();
+        createTool.setText("Create Tool");
+        createTool.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Create tool");
+                Iterator<String> toolTypesI = toolTypes.iterator();
+                Iterator<CheckBox> selectedToolTypesI = selectedToolTypes.iterator();
+                LinkedList<String> output = new LinkedList<>();
+                while(toolTypesI.hasNext()) {
+                	if (selectedToolTypesI.next().isSelected()) {
+                		output.add(toolTypesI.next());
+                	}
+                }
+                
+                //TODO Create the tool on the database
+            }
+        });
+        
+        toolCreation.getChildren().add(toolName);
+        toolCreation.getChildren().add(toolPurchase);
+        toolCreation.getChildren().add(listOfTypes);
+        toolCreation.getChildren().add(lendableTool);
+        toolCreation.getChildren().add(createTool);
+        
+        return toolCreation;
 	}
 	
 	/**
