@@ -3,6 +3,7 @@ package ObjectClasses;
 import DBContollerPackage.DBUser;
 import cs.rit.edu.DBConn;
 
+import javax.swing.*;
 import java.sql.Date;
 
 /**
@@ -124,10 +125,9 @@ public class LendingLog {
 
     /**
      * returns a tuple congaing the relevant data contained within this LendingLog
-     * @return string containing this. ... variable info
+     * @return debug tuple containing the log info as a string
      */
-    @Override
-    public String toString() {
+    public String debugToString() {
         return "{logID : " + this.logID + "" +
                 " userToID: " + this.toUserID +
                 ", userFromID: " + this.fromUserID +
@@ -136,5 +136,24 @@ public class LendingLog {
                 ", returnDate " + this.returnDate.toString() +
                 ", actionType: " + this.action +
                 "}";
+    }
+
+    /**
+     * Cleaner, displayable version of this log
+     * Format: User [FROMUSER] [Lent/Returned] Tool [TOOLID] to User [TOUSER] on the day [logDate]
+     * @return lending log data in above format
+     */
+    @Override
+    public String toString() {
+        if(action == ActionType.Lend) {
+            //Lending case
+            return "User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
+                    " to User " + toUserID + "on the day " + this.logDate.toString() +
+                    " until the day " + this.returnDate.toString();
+        } else {
+            //no return dates for Returning actions
+            return "User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
+                    " to User " + toUserID + "on the day " + this.logDate.toString();
+        }
     }
 }
