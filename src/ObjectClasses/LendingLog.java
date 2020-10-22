@@ -132,8 +132,8 @@ public class LendingLog {
                 " userToID: " + this.toUserID +
                 ", userFromID: " + this.fromUserID +
                 ", toolID: " + this.toolID +
-                ", logDate + " + this.logDate.toString() +
-                ", returnDate " + this.returnDate.toString() +
+                ", logDate: " + this.logDate.toString() +
+                ", returnDate: " + this.returnDate.toString() +
                 ", actionType: " + this.action +
                 "}";
     }
