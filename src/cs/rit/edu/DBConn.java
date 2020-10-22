@@ -1,7 +1,7 @@
 package cs.rit.edu;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class DBConn {
     Connection c = null ;
@@ -46,5 +46,32 @@ public class DBConn {
             System.out.println("Database is already connected.");
             return null;
         }
+    }
+
+    public ArrayList<String> fetchAllToolTypes() {
+        Statement stmt = null;
+        ArrayList<String> types = new ArrayList<>() ;
+
+        if(!connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            stmt = this.getConn().createStatement();
+            PreparedStatement st = this.getConn().prepareStatement("SELECT type_name FROM tooltype");
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                types.add(rs.getString("type_name"));
+            }
+            rs.close();
+            stmt.close();
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("All tool types pulled from database.");
+        return types;
     }
 }
