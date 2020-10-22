@@ -209,9 +209,8 @@ public class User {
                 if (tool.isLendable()) {
                     if(this.removeFromCollection(tool) && user_to.addToCollection(tool)) {
                         //todo make a log object and store this transaction in db, also prob need 'return date' as a param
-                        LendingLog log = new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
+                            new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
                                 ActionType.Lend, returnDate, tool.getToolID(), user_to.getUserID(), this.userID);
-                        //todo make sure that this new log object is properly filed in database
                         return true ;
                     }
                     else {

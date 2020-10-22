@@ -1,5 +1,6 @@
 package cs.rit.edu.GUI;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -229,7 +230,10 @@ public class ToolInterface extends Application{
                 		output.add(toolTypesI.next());
                 	}
                 }
-                
+
+//                Tool newTool = new Tool(toolName, purchaseDate, lendable, toolTypes, conn);
+//                appUser.addToCollection(newTool);
+//                appUser.addToOwned(newTool) ;
                 //TODO Create the tool on the database
             }
         });
