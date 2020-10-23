@@ -241,4 +241,8 @@ public class DBUser {
 
         return logSet ;
     }
+
+    public DBConn getConn() {
+        return conn;
+    }
 }

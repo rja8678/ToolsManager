@@ -56,11 +56,11 @@ public class LendingLog {
      * @param toUserID the unique sending user id
      * @param fromUserID the unique receiving user id
      */
-    public LendingLog(DBUser dbu, Date logDate, ActionType action, Date returnDate, int toolID, int toUserID, int fromUserID){
+    public LendingLog(DBConn conn, Date logDate, ActionType action, Date returnDate, int toolID, int toUserID, int fromUserID){
         //todo make proper DB connection and do stuff
-        int newId = dbu.insertLendingLog(logDate, action, returnDate, toolID, toUserID, fromUserID);
+        int newId = new DBUser(conn).insertLendingLog(logDate, action, returnDate, toolID, toUserID, fromUserID);
 
-        LendingLog temp = dbu.fetchLendingLog(newId);
+        LendingLog temp = conn.fetchLendingLog(newId);
 
         this.logDate = temp.getLogDate();
         this.action = temp.getAction();
@@ -78,9 +78,9 @@ public class LendingLog {
      * @param id unique ID identifying this log
      * @param dbu the connection to the user db
      */
-    public LendingLog(int id, DBUser dbu){
+    public LendingLog(int id, DBConn conn){
 
-        LendingLog log = dbu.fetchLendingLog(id);
+        LendingLog log = conn.fetchLendingLog(id);
 
         this.logID = log.getLogID();
         this.logDate = log.getReturnDate();
