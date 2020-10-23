@@ -267,7 +267,9 @@ public class ToolInterface extends Application{
         
         ArrayList<String> usersNames = new ArrayList<>();
         for (Integer userID: allUsers.keySet()) {
-        	usersNames.add(userID+" : "+allUsers.get(userID));
+        	if(userID != appUser.getUserID()) {
+            	usersNames.add(userID+" : "+allUsers.get(userID));
+        	}
         }
         
         ComboBox<String> toolsDrop = new ComboBox<String>(FXCollections.observableArrayList(toolNames));
@@ -301,6 +303,8 @@ public class ToolInterface extends Application{
             	refreshToolCollection(appUser.getToolCollection());
             	refreshToolsOwned(appUser.getOwnedTools());
             	refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
+            	
+            	lendingPaneInit();
             }
         });
         
