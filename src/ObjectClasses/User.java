@@ -30,14 +30,16 @@ public class User {
     /**
      * Constructor used by the DBUser to create a user object. This should not be filled with any data except
      */
-    public User(int userID, String firstName, String lastName,
-                HashMap<Integer, Tool> toolCollection, HashMap<Integer, Tool> ownedTools){
+    public User(int userID, String firstName, String lastName, HashMap<Integer,
+            Tool> toolCollection, HashMap<Integer, Tool> ownedTools, DBUser dbu){
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
 
         this.toolCollection = toolCollection;
         this.ownedTools = ownedTools;
+
+        this.dbu = dbu;
     }
 
     /**
@@ -74,7 +76,7 @@ public class User {
         int toolID = tool.getToolID();
 
         try {
-            if(dbu.addToCollection(this.userID,toolID)) {
+            if(dbu.addToCollection(this.userID, toolID)) {
                 this.toolCollection.put(tool.getToolID(), tool);
                 return true;
             }
@@ -85,7 +87,7 @@ public class User {
 
         } catch (Exception e) {
             System.out.println("DB-FAILURE: Failed to add tool "+ toolID +" to collection: " +this.userID);
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
             return false;
         }
     }
@@ -249,17 +251,19 @@ public class User {
             User userTo = dbu.createUserObject(tool.getOwnerID());
             //check if you have tool in your collection
             if (this.getToolCollection().contains(tool)) {
-                this.removeFromCollection(tool);
-                userTo.addToCollection(tool);
-                //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
+                if(this.removeFromCollection(tool) && userTo.addToCollection(tool)){
+                    //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
 
-                //todo use this log to make proper database update
-                new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
-                        ActionType.Return, null, tool.getToolID(), userTo.getUserID(), this.getUserID());
+                    //todo use this log to make proper database update
+                    new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
+                            ActionType.Return, null, tool.getToolID(), userTo.getUserID(), this.getUserID());
 
-                System.out.println("Tool " + tool.toString() + " was successfully returned to User "
-                        + userTo.toString() + "by User " + this.toString());
-                return true;
+                    System.out.println("Tool " + tool.toString() + " was successfully returned to User "
+                            + userTo.toString() + "by User " + this.toString());
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
                 return false;
