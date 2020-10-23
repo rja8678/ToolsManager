@@ -233,36 +233,29 @@ public class User {
 
 
     /**
-     * Function that returns a given tool from this User's collection back to a given user who owns it
-     * If user_to does not actually own the tool, then function will fail to return tool, and print statement
+     * Function that returns a given tool from this User's collection back to the tool's owner
      * If you do not have tool in your collection, function will not return tool and will print error statement
      * @param tool the tool to be returned
-     * @param user_to the user to return the tool to
      * @return true if the tool was successfully given back; false otherwise
      */
-    public boolean returnTool(Tool tool, User user_to){
+    public boolean returnTool(Tool tool){
         //check if the user_to owns this tool
-        if(user_to.getOwnedTools().contains(tool)) {
+        User userTo = dbu.createUserObject(tool.getOwnerID());
             //check if you have tool in your collection
-            if(this.getToolCollection().contains(tool)){
-                this.removeFromCollection(tool);
-                user_to.addToCollection(tool);
-                //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
+        if(this.getToolCollection().contains(tool)){
+            this.removeFromCollection(tool);
+            userTo.addToCollection(tool);
+            //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
 
-                //todo use this log to make proper database update
-                new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
-                        ActionType.Return, null, tool.getToolID(), user_to.getUserID(), this.getUserID());
+            //todo use this log to make proper database update
+            new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
+                    ActionType.Return, null, tool.getToolID(), userTo.getUserID(), this.getUserID());
 
-                System.out.println("Tool " + tool.toString() + " was successfully returned to User "
-                                            + user_to.toString() + "by User " + this.toString());
-                return true;
-            } else {
-                System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
-                return false;
-            }
+            System.out.println("Tool " + tool.toString() + " was successfully returned to User "
+                                        + userTo.toString() + "by User " + this.toString());
+            return true;
         } else {
-            System.out.println("Unable to return Tool + " + tool.toString() + " because " +
-                    "User " + user_to.toString() + " does not own it");
+            System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
             return false;
         }
     }
