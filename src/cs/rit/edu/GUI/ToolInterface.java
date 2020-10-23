@@ -82,15 +82,23 @@ public class ToolInterface extends Application{
 
         //Collection in the center
         HBox toolLists = new HBox();
+        VBox collectionTitle = new VBox();
+        VBox ownedTitle = new VBox();
         
         collectionList = new HBox();
         ownedList = new HBox();
         
+        collectionTitle.getChildren().add(new Label("Your collection"));
+        collectionTitle.getChildren().add(collectionList);
+        ownedTitle.getChildren().add(new Label("Your owned tools"));
+        ownedTitle.getChildren().add(ownedList);
+        
+        
         createCollections();
         
-        toolLists.getChildren().add(collectionList);
+        toolLists.getChildren().add(collectionTitle);
         toolLists.getChildren().add(new Separator());
-        toolLists.getChildren().add(ownedList);
+        toolLists.getChildren().add(ownedTitle);
         
         VBox toolCreation = toolCreationMenu();
         ScrollPane toolCreationScroll = new ScrollPane();
@@ -106,9 +114,13 @@ public class ToolInterface extends Application{
         fromUserIDCol = new VBox();
         
         lendLogs.getChildren().add(logDateCol);
+        lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(actionCol);
+        lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(returnDateCol);
+        lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(toUserIDCol);
+        lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(fromUserIDCol);
         
         BorderPane pane = new BorderPane();
