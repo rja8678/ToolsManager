@@ -1,12 +1,10 @@
 package ObjectClasses;
 
-
-import DBContollerPackage.DBTool;
-import DBContollerPackage.DBUser;
-import cs.rit.edu.DBConn;
-
 import java.sql.Date;
 import java.util.ArrayList;
+
+import DBContollerPackage.DBTool;
+import cs.rit.edu.DBConn;
 
 public class Tool {
 
