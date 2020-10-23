@@ -33,18 +33,18 @@ public class Main {
 //			System.out.println(new DBTool(conn).fetchTool(4).toString());
 
 			// BELOW WORKS, UNCOMMENT TO LEND A TOOL FROM u1's collection to u2
-			u1.lendTool(u1.getToolCollection().getFirst(), u2, new Date(System.currentTimeMillis()));
+//			u1.lendTool(u1.getToolCollection().getFirst(), u2, new Date(System.currentTimeMillis()));
 //
 			System.out.println("User1 Collection: " + u1.getToolCollection().toString());
 			System.out.println("User2 Collection: " + u2.getToolCollection().toString());
 
-			ArrayList<LendingLog> logs = u1.getLendingLogs();
-
-			for(int i = 0; i < logs.size(); i++) {
-				System.out.println(logs.get(i).toString());
-			}
-
-			System.out.println(conn.fetchLendingLog(1).toString());
+//			ArrayList<LendingLog> logs = u1.getLendingLogs();
+//
+//			for(int i = 0; i < logs.size(); i++) {
+//				System.out.println(logs.get(i).toString());
+//			}
+//
+//			System.out.println(conn.fetchLendingLog(1).toString());
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");
 		}
