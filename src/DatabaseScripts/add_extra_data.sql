@@ -1,3 +1,13 @@
+INSERT INTO "user" (fname, lname) VALUES ('zach','easley');
+INSERT INTO "user" (fname, lname) VALUES ('riley','adams');
+INSERT INTO "user" (fname, lname) VALUES ('andrew','nash');
+INSERT INTO "user" (fname, lname) VALUES ('mackenzie','rhody');
+
+INSERT INTO tooltype (type_name) VALUES ('power');
+INSERT INTO tooltype (type_name) VALUES ('saw');
+INSERT INTO tooltype (type_name) VALUES ('drill');
+INSERT INTO tooltype (type_name) VALUES ('hammer');
+
 INSERT INTO tool (name, lendable) VALUES ('Tool#1', 0);
 INSERT INTO tool (name, lendable) VALUES ('Tool#2', 1);
 INSERT INTO tool (name, lendable) VALUES ('Tool#5', 0);
