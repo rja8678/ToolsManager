@@ -17,6 +17,7 @@ public class DBTool {
         String name = null;
         boolean lendable = false;
         Date purchaseDate = null;
+        int ownerId = -1;
 
         if(!dbConn.connected()) {
             System.out.println("System not connected.");
@@ -35,12 +36,19 @@ public class DBTool {
             rs.close();
             st.close();
 
+            PreparedStatement inner_st = dbConn.getConn().prepareStatement("SELECT iduser FROM user_owns_tool WHERE idtool = ?");
+            inner_st.setInt(1, toolID);
+            ResultSet inner_rs = inner_st.executeQuery();
+
+            inner_rs.next();
+            ownerId = inner_rs.getInt(1);
+
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
         System.out.println("Tool with id " + toolID + " fetched from Database successfully");
-        return new Tool(toolID, name, purchaseDate, lendable, fetchToolTypes(toolID));
+        return new Tool(toolID, ownerId, name, purchaseDate, lendable, fetchToolTypes(toolID));
     }
 
     public ArrayList<String> fetchToolTypes(int toolid) {
