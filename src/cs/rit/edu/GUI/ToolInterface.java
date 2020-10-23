@@ -1,5 +1,7 @@
 package cs.rit.edu.GUI;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +39,7 @@ public class ToolInterface extends Application{
     
     @Override
     public void stop() {
+    	System.out.println("Closing GUI");
     	conn.closeConn();
     }
     
@@ -223,18 +226,26 @@ public class ToolInterface extends Application{
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Create tool");
-                //TODO Change
-                Iterator<String> toolTypesI = toolTypes.values().iterator();
+                Iterator<Integer> toolTypesI = toolTypes.keySet().iterator();
                 Iterator<CheckBox> selectedToolTypesI = selectedToolTypes.iterator();
-                LinkedList<String> output = new LinkedList<>();
-                while(toolTypesI.hasNext()) {
+                ArrayList<Integer> output = new ArrayList<>();
+                
+                for(int i = 0; i < toolTypes.keySet().size(); i++) {
                 	if (selectedToolTypesI.next().isSelected()) {
                 		output.add(toolTypesI.next());
                 	}
                 }
                 
-                //TODO Create the tool on the database
+                LocalDate purchDate = toolPurchaseDate.getValue();
+                Date date = Date.valueOf(purchDate);
+                String toolNameStr = toolNameEntry.getText();
+                boolean lendability = lendableToolCheck.isSelected();
+                
+                Tool newTool = new Tool(toolNameStr, date, lendability, output, conn);
+                appUser.addToCollection(newTool);
+                appUser.addToOwned(newTool);
+                refreshToolCollection(appUser.getToolCollection());
+                refreshToolsOwned(appUser.getOwnedTools());
             }
         });
         
