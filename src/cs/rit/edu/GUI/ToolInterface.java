@@ -214,6 +214,9 @@ public class ToolInterface extends Application{
 		collectionPurchaseDate.getChildren().clear();
 		collectionReturnButtons.getChildren().clear();
 
+		collectionToolName.setSpacing(8);
+		collectionPurchaseDate.setSpacing(8);
+		
         collectionToolName.getChildren().add(new Label("Tool Names"));
         collectionPurchaseDate.getChildren().add(new Label("Purchase Dates"));
         collectionReturnButtons.getChildren().add(new Label("Return back to owner"));
@@ -227,13 +230,16 @@ public class ToolInterface extends Application{
 
 				@Override
 				public void handle(ActionEvent event) {
-					//TODO
 					appUser.returnTool(tool);
+					refreshToolCollection(appUser.getToolCollection());
+					refreshToolCollection(appUser.getOwnedTools());
+					refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
 				}
 			});
 			
 			collectionToolName.getChildren().add(toolName);
 			collectionPurchaseDate.getChildren().add(purchaseDate);
+			collectionReturnButtons.getChildren().add(returnButton);
 		}
 	}
 	

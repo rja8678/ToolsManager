@@ -31,14 +31,16 @@ public class User {
     /**
      * Constructor used by the DBUser to create a user object. This should not be filled with any data except
      */
-    public User(int userID, String firstName, String lastName,
-                HashMap<Integer, Tool> toolCollection, HashMap<Integer, Tool> ownedTools){
+    public User(int userID, String firstName, String lastName, HashMap<Integer,
+            Tool> toolCollection, HashMap<Integer, Tool> ownedTools, DBUser dbu){
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
 
         this.toolCollection = toolCollection;
         this.ownedTools = ownedTools;
+
+        this.dbu = dbu;
     }
 
     /**
@@ -75,7 +77,7 @@ public class User {
         int toolID = tool.getToolID();
 
         try {
-            if(dbu.addToCollection(this.userID,toolID)) {
+            if(dbu.addToCollection(this.userID, toolID)) {
                 this.toolCollection.put(tool.getToolID(), tool);
                 return true;
             }
@@ -86,7 +88,7 @@ public class User {
 
         } catch (Exception e) {
             System.out.println("DB-FAILURE: Failed to add tool "+ toolID +" to collection: " +this.userID);
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
             return false;
         }
     }
@@ -132,6 +134,7 @@ public class User {
 
     public boolean addToOwned(Tool tool){
         int toolID = tool.getToolID();
+        tool.setOwnerID(this.userID);
 
         try {
             if(dbu.addToOwned(this.userID,toolID)) {
@@ -156,6 +159,7 @@ public class User {
 
     public boolean removeFromOwned(Tool tool){
         int toolID = tool.getToolID();
+        tool.setOwnerID(-1);
 
         try {
             if(dbu.addToOwned(this.userID,toolID)) {
@@ -213,7 +217,7 @@ public class User {
                 if (tool.isLendable()) {
                     if(this.removeFromCollection(tool) && user_to.addToCollection(tool)) {
                         //todo make a log object and store this transaction in db, also prob need 'return date' as a param
-                            new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
+                            new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
                                 ActionType.Lend, returnDate, tool.getToolID(), user_to.getUserID(), this.userID);
                         return true ;
                     }
@@ -251,37 +255,37 @@ public class User {
     }
 
     /**
-     * Function that returns a given tool from this User's collection back to a given user who owns it
-     * If user_to does not actually own the tool, then function will fail to return tool, and print statement
+     * Function that returns a given tool from this User's collection back to the tool's owner
      * If you do not have tool in your collection, function will not return tool and will print error statement
      * @param tool the tool to be returned
-     * @param user_to the user to return the tool to
      * @return true if the tool was successfully given back; false otherwise
      */
-    public boolean returnTool(Tool tool, User user_to){
-        //check if the user_to owns this tool
-        if(user_to.getOwnedTools().contains(tool)) {
+    public boolean returnTool(Tool tool){
+        if(tool.getOwnerID() == this.userID){
+            System.out.println("Can't return tool back to yourself");
+            return false;
+        } else {
+            //check if the user_to owns this tool
+            User userTo = dbu.createUserObject(tool.getOwnerID());
             //check if you have tool in your collection
-            if(this.getToolCollection().contains(tool)){
-                this.removeFromCollection(tool);
-                user_to.addToCollection(tool);
-                //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
+            if (this.getToolCollection().contains(tool)) {
+                if(this.removeFromCollection(tool) && userTo.addToCollection(tool)){
+                    //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
 
-                //todo use this log to make proper database update
-                new LendingLog(dbu, new java.sql.Date(System.currentTimeMillis()),
-                        ActionType.Return, null, tool.getToolID(), user_to.getUserID(), this.getUserID());
+                    //todo use this log to make proper database update
+                    new LendingLog(dbu.getConn(), new java.sql.Date(System.currentTimeMillis()),
+                            ActionType.Return, null, tool.getToolID(), userTo.getUserID(), this.getUserID());
 
-                System.out.println("Tool " + tool.toString() + " was successfully returned to User "
-                                            + user_to.toString() + "by User " + this.toString());
-                return true;
+                    System.out.println("Tool " + tool.toString() + " was successfully returned to User "
+                            + userTo.toString() + "by User " + this.toString());
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 System.out.println("Unable to return Tool " + tool.toString() + " because it is not in your collection");
                 return false;
             }
-        } else {
-            System.out.println("Unable to return Tool + " + tool.toString() + " because " +
-                    "User " + user_to.toString() + " does not own it");
-            return false;
         }
     }
 

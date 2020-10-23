@@ -7,10 +7,10 @@ INSERT INTO tool (name, lendable, purchase_date) VALUES ('STIHL MSA 161 T', 1, '
 INSERT INTO tool (name, lendable, purchase_date) VALUES ('Nikro Dewalt 20V Cordless Drill', 1, '2020-10-20');
 INSERT INTO tool (name, lendable, purchase_date) VALUES ('Bosch PS31-2A 12-Volt Max', 0, '2020-10-20');
 
-INSERT INTO tooltype (idtool_type, type_name) VALUES (1, 'power');
-INSERT INTO tooltype (idtool_type, type_name) VALUES (2, 'saw');
-INSERT INTO tooltype (idtool_type, type_name) VALUES (3, 'drill');
-INSERT INTO tooltype (idtool_type, type_name) VALUES (4, 'hammer');
+INSERT INTO tooltype (type_name) VALUES ('power');
+INSERT INTO tooltype (type_name) VALUES ('saw');
+INSERT INTO tooltype (type_name) VALUES ('drill');
+INSERT INTO tooltype (type_name) VALUES ('hammer');
 
 INSERT INTO tool_tooltype VALUES (1,1);
 INSERT INTO tool_tooltype VALUES (1,2);

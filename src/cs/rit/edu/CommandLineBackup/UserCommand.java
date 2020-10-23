@@ -10,7 +10,7 @@ public enum UserCommand {
     HELP("Displays the available commands and information", "", "help"),
     MAKETOOL("Create a Tool and add to your collection", "name(string), lendabl(bool), type...(integers)", "make", "maketool"),
     LENDTOOL("Lend a Tool to another user", "toolID(int), userID(int), returnDate(\"yyyy-mm-dd\")", "lend", "lendtool"),
-    RETURNTOOL("Return a borrowed tool", "toolID(int), userID(int)", "return", "returntool"),
+    RETURNTOOL("Return a borrowed tool", "toolID(int)", "return", "returntool"),
     OWNED("Display all of your owned tools", "", "owned", "displayowned"),
     COLLECTION("Display all of the tools in your collection", "", "collection", "displaycollection"),
     LOGS("Display the logs involving you", "", "logs", "displaylogs"),

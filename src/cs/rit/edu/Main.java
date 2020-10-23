@@ -38,13 +38,13 @@ public class Main {
 			System.out.println("User1 Collection: " + u1.getToolCollection().toString());
 			System.out.println("User2 Collection: " + u2.getToolCollection().toString());
 
-			ArrayList<LendingLog> logs = u1.getLendingLogs();
-
-			for(int i = 0; i < logs.size(); i++) {
-				System.out.println(logs.get(i).toString());
-			}
-
-//			System.out.println(new DBUser(conn).fetchLendingLog(2).toString());
+//			ArrayList<LendingLog> logs = u1.getLendingLogs();
+//
+//			for(int i = 0; i < logs.size(); i++) {
+//				System.out.println(logs.get(i).toString());
+//			}
+//
+//			System.out.println(conn.fetchLendingLog(1).toString());
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");
 		}

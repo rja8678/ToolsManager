@@ -72,13 +72,12 @@ public class TextInterface {
     }
 
     /**
-     * returns a tool
+     * returns a tool back to its owner
      * @param toolID the ID of the tool to be returned
-     * @param toUserID the ID of the user we are returning the tool back to
      */
-    public void returnTool(int toolID, int toUserID){
+    public void returnTool(int toolID){
         //todo make sure that there are guards here against lending to non existent
-        this.user.returnTool(this.user.getToolFromCollection(toolID), new User(toUserID, conn));
+        this.user.returnTool(this.user.getToolFromCollection(toolID));
     }
 
     /**
@@ -204,9 +203,12 @@ public class TextInterface {
                     }
                     break;
                 case RETURNTOOL:
-                    int toolID = Integer.parseInt(splitCom[1]);
-                    int userID = Integer.parseInt(splitCom[2]);
-                    this.returnTool(toolID, userID);
+                    if(splitCom.length == 2) {
+                        int toolID = Integer.parseInt(splitCom[1]);
+                        this.returnTool(toolID);
+                    } else {
+                        System.out.println("Invalid Return Arguments");
+                    }
                     break;
                 case OWNED:
                     this.displayOwned();

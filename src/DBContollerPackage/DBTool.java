@@ -17,6 +17,7 @@ public class DBTool {
         String name = null;
         boolean lendable = false;
         Date purchaseDate = null;
+        int ownerId = -1;
 
         if(!dbConn.connected()) {
             System.out.println("System not connected.");
@@ -35,12 +36,23 @@ public class DBTool {
             rs.close();
             st.close();
 
+            PreparedStatement inner_st = dbConn.getConn().prepareStatement("SELECT iduser FROM user_owns_tool WHERE idtool = ?");
+            inner_st.setInt(1, toolID);
+            ResultSet inner_rs = inner_st.executeQuery();
+
+            if(inner_rs.next()) {
+                ownerId = inner_rs.getInt(1);
+            }
+
+            inner_rs.close();
+            inner_st.close();
+            
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
         System.out.println("Tool with id " + toolID + " fetched from Database successfully");
-        return new Tool(toolID, name, purchaseDate, lendable, fetchToolTypes(toolID));
+        return new Tool(toolID, ownerId, name, purchaseDate, lendable, fetchToolTypes(toolID));
     }
 
     public ArrayList<String> fetchToolTypes(int toolid) {
@@ -105,4 +117,27 @@ public class DBTool {
         }
         return toolid;
     }
+
+    public ArrayList<LendingLog> fetchToolLogs(int tid) {
+        ArrayList<LendingLog> logSet = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = dbConn.getConn().prepareStatement("SELECT idlog FROM log_relation WHERE idtool = ?");
+            stmt.setInt(1, tid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                logSet.add(dbConn.fetchLendingLog(rs.getInt(1)));
+            }
+
+            System.out.println("Successfully returned list of 'LendingLog' related to tool: " + tid);
+
+        } catch (Exception e) {
+            System.out.println("Failed to pull tool logs from DB.");
+            e.printStackTrace();
+        }
+
+        return logSet ;
+    }
 }
+
