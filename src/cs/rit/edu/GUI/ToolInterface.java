@@ -167,6 +167,8 @@ public class ToolInterface extends Application{
 			actionCol.getChildren().add(new Label(log.getAction().getStringName()));
 			if (log.getReturnDate() != null) {
 				returnDateCol.getChildren().add(new Label(log.getReturnDate().toString()));
+			}else {
+				returnDateCol.getChildren().add(new Label(" "));
 			}
 			toUserIDCol.getChildren().add(new Label(users.get(log.getToUserID())));
 			fromUserIDCol.getChildren().add(new Label(users.get(log.getFromUserID())));
@@ -298,7 +300,7 @@ public class ToolInterface extends Application{
             	appUser.lendTool(toolToLend, userToLendTo, date);
             	refreshToolCollection(appUser.getToolCollection());
             	refreshToolsOwned(appUser.getOwnedTools());
-            	
+            	refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
             }
         });
         
