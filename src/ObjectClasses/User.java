@@ -1,12 +1,13 @@
 package ObjectClasses;
 
-import DBContollerPackage.DBUser;
-import cs.rit.edu.DBConn;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+
+import DBContollerPackage.DBUser;
+import cs.rit.edu.DBConn;
 
 /**
  * Object that stores User data and methods, including functionality for lending and returning tools
@@ -231,6 +232,23 @@ public class User {
         return false ;
     }
 
+    
+    /**
+     * Handles gathering a list of tools that this user can lend out to someone else
+     * 
+     * @return A list of tools this user can lend out
+     */
+    public List<Tool> toolsICanLend(){
+    	LinkedList<Tool> out = new LinkedList<>();
+    	
+    	for(Tool ownedTool: this.ownedTools.values()) {
+    		if (toolCollection.values().contains(ownedTool)) {
+    			out.add(ownedTool);
+    		}
+    	}
+    	
+    	return out;
+    }
 
     /**
      * Function that returns a given tool from this User's collection back to a given user who owns it

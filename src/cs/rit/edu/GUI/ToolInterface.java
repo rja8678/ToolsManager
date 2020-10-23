@@ -1,13 +1,14 @@
 package cs.rit.edu.GUI;
 
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
+import ObjectClasses.LendingLog;
 import ObjectClasses.Tool;
 import ObjectClasses.User;
 import cs.rit.edu.DBConn;
@@ -22,6 +23,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -34,7 +36,7 @@ public class ToolInterface extends Application{
     static User appUser = null ;
     static DBConn conn = null ;
     
-    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane;
+    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane, logDateCol, actionCol, returnDateCol, toUserIDCol, fromUserIDCol;
     HBox collectionList, ownedList;
     
     @Override
@@ -63,6 +65,7 @@ public class ToolInterface extends Application{
                 refreshToolCollection(appUser.getToolCollection());
                 refreshToolsOwned(appUser.getOwnedTools());
                 lendingPaneInit();
+                refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
             }
         });
 
@@ -90,14 +93,30 @@ public class ToolInterface extends Application{
         toolLists.getChildren().add(ownedList);
         
         VBox toolCreation = toolCreationMenu();
+        ScrollPane toolCreationScroll = new ScrollPane();
+        toolCreationScroll.setContent(toolCreation);
         
         lendPane = new VBox();
+        
+        HBox lendLogs = new HBox();
+        logDateCol = new VBox();
+        actionCol = new VBox();
+        returnDateCol = new VBox();
+        toUserIDCol = new VBox();
+        fromUserIDCol = new VBox();
+        
+        lendLogs.getChildren().add(logDateCol);
+        lendLogs.getChildren().add(actionCol);
+        lendLogs.getChildren().add(returnDateCol);
+        lendLogs.getChildren().add(toUserIDCol);
+        lendLogs.getChildren().add(fromUserIDCol);
         
         BorderPane pane = new BorderPane();
         pane.setTop(login);
         pane.setCenter(toolLists);
-        pane.setLeft(toolCreation);
+        pane.setLeft(toolCreationScroll);
         pane.setRight(lendPane);
+        pane.setBottom(lendLogs);
         
         Scene scene = new Scene(pane, 300, 250);
 
@@ -105,6 +124,30 @@ public class ToolInterface extends Application{
         stage.setScene(scene);
         stage.show();
     }
+	
+	public void refreshLogs(List<LendingLog> logs, HashMap<Integer, String> users) {
+		logDateCol.getChildren().clear();
+		actionCol.getChildren().clear();
+		returnDateCol.getChildren().clear();
+		toUserIDCol.getChildren().clear();
+		fromUserIDCol.getChildren().clear();
+		
+		logDateCol.getChildren().add(new Label("Log Date"));
+		actionCol.getChildren().add(new Label("Action Type"));
+		returnDateCol.getChildren().add(new Label("Return Date"));
+		toUserIDCol.getChildren().add(new Label("Recieving User"));
+		fromUserIDCol.getChildren().add(new Label("Sending User"));
+		
+		for(LendingLog log: logs) {
+			logDateCol.getChildren().add(new Label(log.getLogDate().toString()));
+//			actionCol.getChildren().add(new Label(log.getAction()));
+			if (log.getReturnDate() != null) {
+				returnDateCol.getChildren().add(new Label(log.getReturnDate().toString()));
+			}
+			toUserIDCol.getChildren().add(new Label(users.get(log.getToUserID())));
+			fromUserIDCol.getChildren().add(new Label(users.get(log.getFromUserID())));
+		}
+	}
 	
 	public void createCollections() {
         
@@ -155,24 +198,59 @@ public class ToolInterface extends Application{
         Label lendPaneLabel = new Label("Lending");
         lendPane.getChildren().add(lendPaneLabel);
 		
-		LinkedList<Tool> ownedTools = appUser.getOwnedTools();
+		List<Tool> ownedTools = appUser.toolsICanLend();
         ArrayList<String> toolNames = new ArrayList<>();
         for (Tool tool: ownedTools) {
-        	toolNames.add(tool.getToolName());
+        	if (tool.isLendable()) {
+            	toolNames.add(tool.getToolID()+ " : "+tool.getToolName());
+        	}
         }
         
         HashMap<Integer, String> allUsers = conn.fetchAllUsers();
         
         ArrayList<String> usersNames = new ArrayList<>();
         for (Integer userID: allUsers.keySet()) {
-        	usersNames.add(allUsers.get(userID)+" "+userID);
+        	usersNames.add(userID+" : "+allUsers.get(userID));
         }
         
         ComboBox<String> toolsDrop = new ComboBox<String>(FXCollections.observableArrayList(toolNames));
         ComboBox<String> usersDrop = new ComboBox<String>(FXCollections.observableArrayList(usersNames));
+
+        Label toolReturnLabel = new Label("Return Date: ");
+        DatePicker toolReturnDate = new DatePicker();
+
+        HBox toolReturn = new HBox();
+        toolReturn.getChildren().add(toolReturnLabel);
+        toolReturn.getChildren().add(toolReturnDate);
+        
+        Button submitLendRequest = new Button();
+        submitLendRequest.setText("Submit");
+        submitLendRequest.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+            	String[] selectedTool = toolsDrop.getValue().split(" ");
+            	
+            	Tool toolToLend = appUser.getToolFromOwned(Integer.parseInt(selectedTool[0]));
+            	
+            	String[] selectedUser = usersDrop.getValue().split(" ");
+            	
+            	User userToLendTo = new User(Integer.parseInt(selectedUser[0]), conn);
+            	
+            	LocalDate returnDate = toolReturnDate.getValue();
+                Date date = Date.valueOf(returnDate);
+                
+            	appUser.lendTool(toolToLend, userToLendTo, date);
+            	refreshToolCollection(appUser.getToolCollection());
+            	refreshToolsOwned(appUser.getOwnedTools());
+            	
+            }
+        });
         
         lendPane.getChildren().add(toolsDrop);
         lendPane.getChildren().add(usersDrop);
+        lendPane.getChildren().add(toolReturn);
+        lendPane.getChildren().add(submitLendRequest);
 	}
 	
 	public VBox toolCreationMenu() {
