@@ -42,7 +42,7 @@ public class DBUser {
             System.exit(0);
         }
         System.out.println("User with id: " + id + " fetched from DB successfully");
-        return new User(id, fname, lname, fetchUserToolCollection(id), fetchUserOwnedTools(id));
+        return new User(id, fname, lname, fetchUserToolCollection(id), fetchUserOwnedTools(id), this);
     }
 
     public HashMap<Integer, Tool> fetchUserToolCollection(int id) {

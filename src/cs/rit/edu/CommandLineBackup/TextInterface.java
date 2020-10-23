@@ -203,8 +203,12 @@ public class TextInterface {
                     }
                     break;
                 case RETURNTOOL:
-                    int toolID = Integer.parseInt(splitCom[1]);
-                    this.returnTool(toolID);
+                    if(splitCom.length == 2) {
+                        int toolID = Integer.parseInt(splitCom[1]);
+                        this.returnTool(toolID);
+                    } else {
+                        System.out.println("Invalid Return Arguments");
+                    }
                     break;
                 case OWNED:
                     this.displayOwned();

@@ -72,6 +72,10 @@ public class Tool {
         return this.toolID;
     }
 
+    public void setOwnerID(int ownerID) {
+        this.ownerID = ownerID;
+    }
+
     public int getOwnerID() {
         return ownerID;
     }

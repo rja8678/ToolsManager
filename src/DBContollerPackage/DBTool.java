@@ -44,9 +44,9 @@ public class DBTool {
                 ownerId = inner_rs.getInt(1);
             }
 
-            inner_st.close();
             inner_rs.close();
-
+            inner_st.close();
+            
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
