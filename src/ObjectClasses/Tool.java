@@ -128,6 +128,7 @@ public class Tool {
     public String toString() {
         return "{id: " + this.toolID
                 + ", name: " + this.toolName
+                + ", ownerId: " + this.ownerID
                 + ", purchase_date: " + this.purchaseDate
                 + ", types: " + this.toolTypes.toString()
                 + ", lendable " + this.lendable + "}";
