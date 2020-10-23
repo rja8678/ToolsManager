@@ -40,9 +40,13 @@ public class DBTool {
             inner_st.setInt(1, toolID);
             ResultSet inner_rs = inner_st.executeQuery();
 
-            inner_rs.next();
-            ownerId = inner_rs.getInt(1);
+            if(inner_rs.next()) {
+                ownerId = inner_rs.getInt(1);
+            }
 
+            inner_st.close();
+            inner_st.close();
+            
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
