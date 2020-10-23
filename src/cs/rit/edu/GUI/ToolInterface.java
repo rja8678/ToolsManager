@@ -31,16 +31,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * @author Owner Riley Adams(rja8678)
+ *
+ */
 public class ToolInterface extends Application{
 
     static User appUser = null ;
     static DBConn conn = null ;
     
-    VBox collectionToolName, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane, logDateCol, actionCol, returnDateCol, toUserIDCol, fromUserIDCol;
+    VBox collectionToolName, collectionReturnButtons, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane, logDateCol, actionCol, returnDateCol, toUserIDCol, fromUserIDCol;
     HBox collectionList, ownedList;
     
     @Override
     public void stop() {
+    	//Closing the connection to the database formally
     	System.out.println("Closing GUI");
     	conn.closeConn();
     }
@@ -61,7 +66,8 @@ public class ToolInterface extends Application{
                 System.out.println(Integer.parseInt(usernameInput));
 
                 appUser = new User(Integer.parseInt(usernameInput), conn);
-
+                
+                //Call setup that requires the appUser here
                 refreshToolCollection(appUser.getToolCollection());
                 refreshToolsOwned(appUser.getOwnedTools());
                 lendingPaneInit();
@@ -80,7 +86,7 @@ public class ToolInterface extends Application{
         login.getChildren().add(usernameGroup);
         login.getChildren().add(loginBtn);
 
-        //Collection in the center
+        //Collection in the center, holds the collection of tools and owned tools
         HBox toolLists = new HBox();
         VBox collectionTitle = new VBox();
         VBox ownedTitle = new VBox();
@@ -93,7 +99,7 @@ public class ToolInterface extends Application{
         ownedTitle.getChildren().add(new Label("Your owned tools"));
         ownedTitle.getChildren().add(ownedList);
         
-        
+      //Creates the tool creation menu that allows a user to make a new tool
         createCollections();
         
         toolLists.getChildren().add(collectionTitle);
@@ -123,6 +129,7 @@ public class ToolInterface extends Application{
         lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(fromUserIDCol);
         
+      //Main pane that holds all the sub panes
         BorderPane pane = new BorderPane();
         pane.setTop(login);
         pane.setCenter(toolLists);
@@ -137,6 +144,11 @@ public class ToolInterface extends Application{
         stage.show();
     }
 	
+	/**
+	 * Function to display the logs of a user on the GUI
+	 * @param logs A list of logs for the current user logged in or for a specific tool
+	 * @param users A HashMap of integers of user ids as keys and strings of users names as values
+	 */
 	public void refreshLogs(List<LendingLog> logs, HashMap<Integer, String> users) {
 		logDateCol.getChildren().clear();
 		actionCol.getChildren().clear();
@@ -152,7 +164,7 @@ public class ToolInterface extends Application{
 		
 		for(LendingLog log: logs) {
 			logDateCol.getChildren().add(new Label(log.getLogDate().toString()));
-//			actionCol.getChildren().add(new Label(log.getAction()));
+			actionCol.getChildren().add(new Label(log.getAction().getStringName()));
 			if (log.getReturnDate() != null) {
 				returnDateCol.getChildren().add(new Label(log.getReturnDate().toString()));
 			}
@@ -161,11 +173,17 @@ public class ToolInterface extends Application{
 		}
 	}
 	
+	/**
+	 * Creates the "tables" for displaying both the tool collection and owned tools
+	 * Called once on initialization
+	 * @return The HBox holding those tables to be added to the BorderPane
+	 */
 	public void createCollections() {
         
 		//Creating columns for the collection
         collectionToolName = new VBox();
         collectionPurchaseDate = new VBox();
+        collectionReturnButtons = new VBox();
         
         //Creating columns for the owned tools section
         ownedToolName = new VBox();
@@ -175,6 +193,9 @@ public class ToolInterface extends Application{
         collectionList.getChildren().add(collectionToolName);
         collectionList.getChildren().add(new Separator());
         collectionList.getChildren().add(collectionPurchaseDate);
+        collectionList.getChildren().add(new Separator());
+        collectionList.getChildren().add(collectionReturnButtons);
+        
         
         ownedList.getChildren().add(ownedToolName);
         ownedList.getChildren().add(new Separator());
@@ -191,19 +212,35 @@ public class ToolInterface extends Application{
 	public void refreshToolCollection(List<Tool> tools) {
 		collectionToolName.getChildren().clear();
 		collectionPurchaseDate.getChildren().clear();
+		collectionReturnButtons.getChildren().clear();
 
         collectionToolName.getChildren().add(new Label("Tool Names"));
         collectionPurchaseDate.getChildren().add(new Label("Purchase Dates"));
+        collectionReturnButtons.getChildren().add(new Label("Return back to owner"));
 		
 		for (Tool tool: tools) {
 			Label toolName = new Label(tool.getToolName());
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
+			Button returnButton = new Button();
+			returnButton.setText("Return");
+			returnButton.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					//TODO
+					appUser.returnTool(tool);
+				}
+			});
 			
 			collectionToolName.getChildren().add(toolName);
 			collectionPurchaseDate.getChildren().add(purchaseDate);
 		}
 	}
 	
+	/**
+	 * Function to set up the pane allowing the user to lend a tool to someone
+	 * Created once a user logs in
+	 */
 	public void lendingPaneInit() {
 		lendPane.getChildren().clear();
 		
@@ -264,7 +301,11 @@ public class ToolInterface extends Application{
         lendPane.getChildren().add(toolReturn);
         lendPane.getChildren().add(submitLendRequest);
 	}
-	
+	/**
+	 * Function to make the tool creation sidebar, added to the main BorderPane
+	 * Called once on initialization
+	 * @return A VBox containing everything necessary to make a tool
+	 */
 	public VBox toolCreationMenu() {
 		VBox toolCreation = new VBox();
         Label toolNameLabel = new Label("Tool Name: ");
@@ -290,7 +331,7 @@ public class ToolInterface extends Application{
         lendableTool.getChildren().add(lendableToolCheck);
         
         
-        //Tool Types Checkboxes
+        //Tool Types Checkboxes to select what types this tool is
         HBox listOfTypes = new HBox();
         VBox toolTypeName = new VBox();
         VBox checkBoxes = new VBox();
@@ -298,7 +339,10 @@ public class ToolInterface extends Application{
         listOfTypes.getChildren().add(toolTypeName);
         listOfTypes.getChildren().add(checkBoxes);
         
+
+        //Getting the tool types from the database
         HashMap<Integer, String> toolTypes = conn.fetchAllToolTypes();
+    	//Storing the checkboxes to figure out which were selected on the button press
         List<CheckBox> selectedToolTypes = new ArrayList<>();
         
         for(String toolType: toolTypes.values()) {
@@ -312,6 +356,7 @@ public class ToolInterface extends Application{
         
         Button createTool = new Button();
         createTool.setText("Create Tool");
+      //Runs when the user clicks to create a new tool
         createTool.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -321,6 +366,7 @@ public class ToolInterface extends Application{
                 ArrayList<Integer> output = new ArrayList<>();
                 
                 for(int i = 0; i < toolTypes.keySet().size(); i++) {
+                	//Checks if the checkbox was selected
                 	if (selectedToolTypesI.next().isSelected()) {
                 		output.add(toolTypesI.next());
                 	}
@@ -371,7 +417,10 @@ public class ToolInterface extends Application{
 			ownedLendable.getChildren().add(lendable);
 		}
 	}
-	
+	/**
+	 * Connects to the database and starts the GUI interface
+	 * @param args Takes the username to the database and then the password as arguments with just a space in between them
+	 */
 	public static void main(String[] args) {
 		if(args.length > 1) {
 			String username = args[0];
