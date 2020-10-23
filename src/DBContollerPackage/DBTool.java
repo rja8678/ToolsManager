@@ -45,8 +45,8 @@ public class DBTool {
             }
 
             inner_st.close();
-            inner_st.close();
-            
+            inner_rs.close();
+
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
