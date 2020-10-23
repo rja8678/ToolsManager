@@ -147,13 +147,13 @@ public class LendingLog {
     public String toString() {
         if(action == ActionType.Lend) {
             //Lending case
-            return "User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
-                    " to User " + toUserID + "on the day " + this.logDate.toString() +
+            return this.logID + ": User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
+                    " to User " + toUserID + " on the day " + this.logDate.toString() +
                     " until the day " + this.returnDate.toString();
         } else {
             //no return dates for Returning actions
-            return "User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
-                    " to User " + toUserID + "on the day " + this.logDate.toString();
+            return this.logID + ": User " + fromUserID + " " + action.getStringName() + " Tool " + toolID +
+                    " to User " + toUserID + " on the day " + this.logDate.toString();
         }
     }
 }

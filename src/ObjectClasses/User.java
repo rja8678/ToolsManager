@@ -242,9 +242,9 @@ public class User {
      */
     public boolean returnTool(Tool tool, User user_to){
         //check if the user_to owns this tool
-        if(user_to.getOwnedTools().contains(tool)){
+        if(user_to.getOwnedTools().contains(tool)) {
             //check if you have tool in your collection
-            if(this.getOwnedTools().contains(tool)){
+            if(this.getToolCollection().contains(tool)){
                 this.removeFromCollection(tool);
                 user_to.addToCollection(tool);
                 //todo make sure there is a corresponding USERDB function to properly manipulate database to manipulate this
