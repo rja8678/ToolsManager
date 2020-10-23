@@ -51,7 +51,7 @@ public class DBTool {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Tool with id " + toolID + " fetched from Database successfully");
+//        System.out.println("Tool with id " + toolID + " fetched from Database successfully");
         return new Tool(toolID, ownerId, name, purchaseDate, lendable, fetchToolTypes(toolID));
     }
 
@@ -76,7 +76,7 @@ public class DBTool {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Tool types for tool: "+ toolid +" pulled from database.");
+//        System.out.println("Tool types for tool: "+ toolid +" pulled from database.");
         return types;
     }
 

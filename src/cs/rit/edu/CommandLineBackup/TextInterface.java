@@ -287,6 +287,7 @@ public class TextInterface {
                 TextInterface textInterface = new TextInterface(conn, userID);
                 //start input
                 textInterface.consoleInput();
+                conn.closeConn();
 
             } catch (IOException io){
                 io.printStackTrace();
@@ -308,6 +309,7 @@ public class TextInterface {
 
                 TextInterface textInterface = new TextInterface(conn, userID);
                 textInterface.consoleInput();
+                conn.closeConn();
 
             } catch (IOException io){
                 io.printStackTrace();
@@ -323,6 +325,7 @@ public class TextInterface {
                 DBConn conn = new DBConn(username, password);
                 TextInterface textInterface = new TextInterface(conn, userID);
                 textInterface.consoleInput();
+                conn.closeConn();
             } catch(NumberFormatException e){
                 System.out.println("Usage: third userID parameter must be an integer");
             }

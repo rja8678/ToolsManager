@@ -40,7 +40,7 @@ public class ToolInterface extends Application{
     static User appUser = null ;
     static DBConn conn = null ;
     
-    VBox collectionToolName, collectionReturnButtons, collectionPurchaseDate, ownedToolName, ownedPurchaseDate, ownedLendable, lendPane, logDateCol, actionCol, returnDateCol, toUserIDCol, fromUserIDCol;
+    VBox collectionToolName, collectionReturnButtons, collectionPurchaseDate, ownedToolName, toolIDCol, ownedPurchaseDate, ownedLendable, lendPane, logDateCol, actionCol, returnDateCol, toUserIDCol, fromUserIDCol;
     HBox collectionList, ownedList;
     
     @Override
@@ -53,7 +53,7 @@ public class ToolInterface extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		TextField username = new TextField();
-		username.setPromptText("Username");
+		username.setPromptText("User ID");
 
 		Button loginBtn = new Button();
         loginBtn.setText("Login");
@@ -77,7 +77,7 @@ public class ToolInterface extends Application{
 
         //Login at top of the screen
         VBox usernameGroup = new VBox();
-        Label usernameLab = new Label("Username: ");
+        Label usernameLab = new Label("User ID: ");
         usernameGroup.getChildren().add(usernameLab);
         usernameGroup.getChildren().add(username);
 
@@ -88,6 +88,9 @@ public class ToolInterface extends Application{
 
         //Collection in the center, holds the collection of tools and owned tools
         HBox toolLists = new HBox();
+        ScrollPane toolListScroll = new ScrollPane();
+        toolListScroll.setContent(toolLists);
+        
         VBox collectionTitle = new VBox();
         VBox ownedTitle = new VBox();
         
@@ -113,11 +116,19 @@ public class ToolInterface extends Application{
         lendPane = new VBox();
         
         HBox lendLogs = new HBox();
+        ScrollPane lendLogScroll = new ScrollPane();
+        lendLogScroll.setContent(lendLogs);
+        lendLogScroll.resize(800, 200);
+
+        lendLogScroll.setFitToHeight(true);
+        lendLogScroll.setFitToWidth(true);
+        
         logDateCol = new VBox();
         actionCol = new VBox();
         returnDateCol = new VBox();
         toUserIDCol = new VBox();
         fromUserIDCol = new VBox();
+        toolIDCol = new VBox();
         
         lendLogs.getChildren().add(logDateCol);
         lendLogs.getChildren().add(new Separator());
@@ -128,16 +139,18 @@ public class ToolInterface extends Application{
         lendLogs.getChildren().add(toUserIDCol);
         lendLogs.getChildren().add(new Separator());
         lendLogs.getChildren().add(fromUserIDCol);
+        lendLogs.getChildren().add(new Separator());
+        lendLogs.getChildren().add(toolIDCol);
         
       //Main pane that holds all the sub panes
         BorderPane pane = new BorderPane();
         pane.setTop(login);
-        pane.setCenter(toolLists);
+        pane.setCenter(toolListScroll);
         pane.setLeft(toolCreationScroll);
         pane.setRight(lendPane);
-        pane.setBottom(lendLogs);
+        pane.setBottom(lendLogScroll);
         
-        Scene scene = new Scene(pane, 300, 250);
+        Scene scene = new Scene(pane, 1000, 900);
 
         stage.setTitle("Tool Interface");
         stage.setScene(scene);
@@ -155,12 +168,14 @@ public class ToolInterface extends Application{
 		returnDateCol.getChildren().clear();
 		toUserIDCol.getChildren().clear();
 		fromUserIDCol.getChildren().clear();
+		toolIDCol.getChildren().clear();
 		
 		logDateCol.getChildren().add(new Label("Log Date"));
 		actionCol.getChildren().add(new Label("Action Type"));
 		returnDateCol.getChildren().add(new Label("Return Date"));
 		toUserIDCol.getChildren().add(new Label("Recieving User"));
 		fromUserIDCol.getChildren().add(new Label("Sending User"));
+		toolIDCol.getChildren().add(new Label("Tool ID"));
 		
 		for(LendingLog log: logs) {
 			logDateCol.getChildren().add(new Label(log.getLogDate().toString()));
@@ -172,6 +187,7 @@ public class ToolInterface extends Application{
 			}
 			toUserIDCol.getChildren().add(new Label(users.get(log.getToUserID())));
 			fromUserIDCol.getChildren().add(new Label(users.get(log.getFromUserID())));
+			toolIDCol.getChildren().add(new Label(log.getToolID()+""));
 		}
 	}
 	
@@ -233,6 +249,7 @@ public class ToolInterface extends Application{
 				@Override
 				public void handle(ActionEvent event) {
 					appUser.returnTool(tool);
+					
 					refreshToolCollection(appUser.getToolCollection());
 					refreshToolCollection(appUser.getOwnedTools());
 					refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
@@ -267,7 +284,9 @@ public class ToolInterface extends Application{
         
         ArrayList<String> usersNames = new ArrayList<>();
         for (Integer userID: allUsers.keySet()) {
-        	usersNames.add(userID+" : "+allUsers.get(userID));
+        	if(userID != appUser.getUserID()) {
+            	usersNames.add(userID+" : "+allUsers.get(userID));
+        	}
         }
         
         ComboBox<String> toolsDrop = new ComboBox<String>(FXCollections.observableArrayList(toolNames));
@@ -301,6 +320,8 @@ public class ToolInterface extends Application{
             	refreshToolCollection(appUser.getToolCollection());
             	refreshToolsOwned(appUser.getOwnedTools());
             	refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
+            	
+            	lendingPaneInit();
             }
         });
         
@@ -390,6 +411,7 @@ public class ToolInterface extends Application{
                 appUser.addToOwned(newTool);
                 refreshToolCollection(appUser.getToolCollection());
                 refreshToolsOwned(appUser.getOwnedTools());
+                lendingPaneInit();
             }
         });
         
