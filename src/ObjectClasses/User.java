@@ -131,6 +131,7 @@ public class User {
 
     public boolean addToOwned(Tool tool){
         int toolID = tool.getToolID();
+        tool.setOwnerID(this.userID);
 
         try {
             if(dbu.addToOwned(this.userID,toolID)) {
@@ -155,6 +156,7 @@ public class User {
 
     public boolean removeFromOwned(Tool tool){
         int toolID = tool.getToolID();
+        tool.setOwnerID(-1);
 
         try {
             if(dbu.addToOwned(this.userID,toolID)) {
