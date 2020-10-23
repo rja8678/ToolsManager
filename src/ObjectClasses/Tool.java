@@ -12,6 +12,8 @@ public class Tool {
 
     private int toolID;
 
+    private int ownerID;
+
     private String toolName;
 
     private boolean lendable;
@@ -24,13 +26,15 @@ public class Tool {
     /**
      * constructor for a tool object
      * @param toolID the unique id of the tool
+     * @param ownerID the user id of teh user that owns this tool
      * @param toolName the name of the tool (not unique)
      * @param purchaseDate the date the tool was purchased
      * @param lendable whether or not the tool is flaggd and being lendable
      * @param toolTypes a fully populated list
      */
-    public Tool(int toolID, String toolName, Date purchaseDate, boolean lendable, ArrayList<String> toolTypes){
+    public Tool(int toolID, int ownerID, String toolName, Date purchaseDate, boolean lendable, ArrayList<String> toolTypes){
         this.toolID = toolID;
+        this.ownerID = ownerID;
         this.toolName = toolName;
         this.purchaseDate = purchaseDate;
         this.lendable = lendable;
@@ -42,11 +46,12 @@ public class Tool {
 
         Tool t = dbt.fetchTool(toolID);
 
-        this.toolID = t.toolID;
-        this.toolName = t.toolName;
-        this.purchaseDate = t.purchaseDate;
-        this.lendable = t.lendable;
-        this.toolTypes = t.toolTypes;
+        this.toolID = t.getToolID();
+        this.ownerID = t.getOwnerID();
+        this.toolName = t.getToolName();
+        this.purchaseDate = t.getPurchaseDate();
+        this.lendable = t.isLendable();
+        this.toolTypes = t.getToolTypes();
     }
 
     public Tool (String toolName, Date purchaseDate, boolean lendable, ArrayList<Integer> toolTypes, DBConn conn) {
@@ -55,15 +60,20 @@ public class Tool {
         int newToolId = dbt.insertNewTool(toolName, purchaseDate, lendable, toolTypes);
         Tool t = new Tool(newToolId, conn);
 
-        this.toolID = t.toolID;
-        this.toolName = t.toolName;
-        this.purchaseDate = t.purchaseDate;
-        this.lendable = t.lendable;
-        this.toolTypes = t.toolTypes;
+        this.toolID = t.getToolID();
+        this.ownerID = t.getOwnerID();
+        this.toolName = t.getToolName();
+        this.purchaseDate = t.getPurchaseDate();
+        this.lendable = t.isLendable();
+        this.toolTypes = t.getToolTypes();
     }
 
     public int getToolID(){
         return this.toolID;
+    }
+
+    public int getOwnerID() {
+        return ownerID;
     }
 
     public String getToolName(){
@@ -79,6 +89,10 @@ public class Tool {
 
     public Date getPurchaseDate(){
         return this.purchaseDate;
+    }
+
+    public ArrayList<String> getToolTypes(){
+        return this.toolTypes;
     }
 
     /**
@@ -97,6 +111,7 @@ public class Tool {
             return false;
         }
     }
+
     public ArrayList<LendingLog> getLendingLogs(DBConn conn) {
         return new DBTool(conn).fetchToolLogs(this.toolID) ;
     }
