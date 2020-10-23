@@ -105,4 +105,27 @@ public class DBTool {
         }
         return toolid;
     }
+
+    public ArrayList<LendingLog> fetchToolLogs(int tid) {
+        ArrayList<LendingLog> logSet = new ArrayList<>();
+
+        try {
+            PreparedStatement stmt = dbConn.getConn().prepareStatement("SELECT idlog FROM log_relation WHERE idtool = ?");
+            stmt.setInt(1, tid);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                logSet.add(dbConn.fetchLendingLog(rs.getInt(1)));
+            }
+
+            System.out.println("Successfully returned list of 'LendingLog' related to tool: " + tid);
+
+        } catch (Exception e) {
+            System.out.println("Failed to pull tool logs from DB.");
+            e.printStackTrace();
+        }
+
+        return logSet ;
+    }
 }
+

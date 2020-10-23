@@ -16,13 +16,13 @@ CREATE TABLE tool (
     idtool SERIAL,
     name VARCHAR(45) NULL,
     lendable SMALLINT NULL,
-    purchase_date DATE NULL,
+    purchase_date DATE NULL DEFAULT CURRENT_DATE,
     PRIMARY KEY (idtool)
 );
 
 DROP TABLE IF EXISTS tooltype ;
 CREATE TABLE tooltype (
-    idtool_type INT NOT NULL,
+    idtool_type SERIAL,
     type_name VARCHAR(45) NULL,
     PRIMARY KEY (idtool_type)
 );

@@ -231,7 +231,7 @@ public class ToolInterface extends Application{
                 	}
                 }
 
-//                Tool newTool = new Tool(toolName, purchaseDate, lendable, toolTypes, conn);
+//                Tool newTool = new Tool("toolName", new Date(System.currentTimeMillis()), true, toolTypes, conn);
 //                appUser.addToCollection(newTool);
 //                appUser.addToOwned(newTool) ;
                 //TODO Create the tool on the database
