@@ -79,6 +79,22 @@ public class Tool {
         return this.purchaseDate;
     }
 
+    /**
+     * Overridden .equals method to allow for deep comparison between tools
+     * ToolID is a unique identifier for tools, so if two tools are the same they must have the
+     * same toolID
+     * @param obj object to compare
+     * @return true if obj is the same as this Tool, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Tool){
+            Tool toolObj = (Tool) obj;
+            return toolObj.getToolID() == this.toolID;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * returns String in tuple format representing this tool
