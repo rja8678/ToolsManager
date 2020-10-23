@@ -1,6 +1,5 @@
 package cs.rit.edu.GUI;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,8 +89,6 @@ public class ToolInterface extends Application{
         VBox toolCreation = toolCreationMenu();
         
         lendPane = new VBox();
-        Label lendPaneLabel = new Label("Lending");
-        lendPane.getChildren().add(lendPaneLabel);
         
         BorderPane pane = new BorderPane();
         pane.setTop(login);
@@ -110,17 +107,12 @@ public class ToolInterface extends Application{
         
 		//Creating columns for the collection
         collectionToolName = new VBox();
-        collectionToolName.getChildren().add(new Label("Tool Names"));
         collectionPurchaseDate = new VBox();
-        collectionPurchaseDate.getChildren().add(new Label("Purchase Dates"));
         
         //Creating columns for the owned tools section
         ownedToolName = new VBox();
-        ownedToolName.getChildren().add(new Label("Tool Names"));
         ownedPurchaseDate = new VBox();
-        ownedPurchaseDate.getChildren().add(new Label("Purchase Dates"));
         ownedLendable = new VBox();
-        ownedLendable.getChildren().add(new Label("Lendability"));
         
         collectionList.getChildren().add(collectionToolName);
         collectionList.getChildren().add(new Separator());
@@ -139,6 +131,12 @@ public class ToolInterface extends Application{
 	 * @param tools List of tools to display
 	 */
 	public void refreshToolCollection(List<Tool> tools) {
+		collectionToolName.getChildren().clear();
+		collectionPurchaseDate.getChildren().clear();
+
+        collectionToolName.getChildren().add(new Label("Tool Names"));
+        collectionPurchaseDate.getChildren().add(new Label("Purchase Dates"));
+		
 		for (Tool tool: tools) {
 			Label toolName = new Label(tool.getToolName());
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
@@ -149,6 +147,11 @@ public class ToolInterface extends Application{
 	}
 	
 	public void lendingPaneInit() {
+		lendPane.getChildren().clear();
+		
+        Label lendPaneLabel = new Label("Lending");
+        lendPane.getChildren().add(lendPaneLabel);
+		
 		LinkedList<Tool> ownedTools = appUser.getOwnedTools();
         ArrayList<String> toolNames = new ArrayList<>();
         for (Tool tool: ownedTools) {
@@ -230,10 +233,7 @@ public class ToolInterface extends Application{
                 		output.add(toolTypesI.next());
                 	}
                 }
-
-//                Tool newTool = new Tool(toolName, purchaseDate, lendable, toolTypes, conn);
-//                appUser.addToCollection(newTool);
-//                appUser.addToOwned(newTool) ;
+                
                 //TODO Create the tool on the database
             }
         });
@@ -252,6 +252,14 @@ public class ToolInterface extends Application{
 	 * @param tools List of tools to display
 	 */
 	public void refreshToolsOwned(List<Tool> tools) {
+		ownedToolName.getChildren().clear();
+		ownedPurchaseDate.getChildren().clear();
+		ownedLendable.getChildren().clear();
+		
+        ownedToolName.getChildren().add(new Label("Tool Names"));
+        ownedPurchaseDate.getChildren().add(new Label("Purchase Dates"));
+        ownedLendable.getChildren().add(new Label("Lendability"));
+		
 		for (Tool tool: tools) {
 			Label toolName = new Label(tool.getToolName());
 			Label purchaseDate = new Label(tool.getPurchaseDate().toString());
