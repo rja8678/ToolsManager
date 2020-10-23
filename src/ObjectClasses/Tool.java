@@ -97,6 +97,9 @@ public class Tool {
             return false;
         }
     }
+    public ArrayList<LendingLog> getLendingLogs(DBConn conn) {
+        return new DBTool(conn).fetchToolLogs(this.toolID) ;
+    }
 
     /**
      * returns String in tuple format representing this tool

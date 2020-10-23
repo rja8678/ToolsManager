@@ -1,10 +1,9 @@
 package cs.rit.edu;
 
-import DBContollerPackage.DBTool;
-import ObjectClasses.Tool;
+import ObjectClasses.ActionType;
+import ObjectClasses.LendingLog;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DBConn {
@@ -53,7 +52,6 @@ public class DBConn {
     }
 
     public HashMap<Integer, String> fetchAllToolTypes() {
-        Statement stmt = null;
         HashMap<Integer, String> types = new HashMap<>() ;
 
         if(!connected()) {
@@ -61,7 +59,6 @@ public class DBConn {
             return null;
         }
         try {
-            stmt = this.getConn().createStatement();
             PreparedStatement st = this.getConn().prepareStatement("SELECT idtool_type, type_name FROM tooltype");
             ResultSet rs = st.executeQuery();
 
@@ -69,7 +66,7 @@ public class DBConn {
                 types.put(rs.getInt("idtool_type"),rs.getString("type_name"));
             }
             rs.close();
-            stmt.close();
+            st.close();
 
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
@@ -101,5 +98,58 @@ public class DBConn {
 
         System.out.println("Users where fetched from DB successfully");
         return users;
+    }
+
+    public LendingLog fetchLendingLog(int logid) {
+        LendingLog log = null;
+        Date logDate = null;
+        int action = -1;
+        Date returnDate = null;
+
+        int toUser = -1;
+        int fromUser = -1;
+        int idtool = -1 ;
+
+        try {
+            PreparedStatement st = this.getConn().prepareStatement("SELECT * FROM lendinglog WHERE idlog = ?");
+            st.setInt(1, logid);
+            ResultSet rs = st.executeQuery();
+
+            while ( rs.next() ) {
+                logDate = rs.getDate("log_date");
+                action = rs.getInt("action");
+                returnDate = rs.getDate("return_date");
+            }
+            rs.close();
+            st.close();
+
+            PreparedStatement inner_st = this.getConn().prepareStatement("SELECT * FROM log_relation WHERE idlog = ?");
+            inner_st.setInt(1, logid);
+            ResultSet result = inner_st.executeQuery();
+
+            while ( result.next() ) {
+                toUser = result.getInt("to_iduser");
+                fromUser = result.getInt("from_iduser");
+                idtool = result.getInt("idtool");
+            }
+            result.close();
+            inner_st.close();
+
+            ActionType at;
+
+            if(action == 0) {
+                at = ActionType.Lend;
+            }
+            else {
+                at = ActionType.Return;
+            }
+
+            log = new LendingLog(logid, logDate, at, returnDate, idtool, toUser, fromUser);
+
+        } catch (Exception e) {
+            System.out.println("Failed to fetch log: " + logid);
+            e.printStackTrace();
+        }
+        return log;
     }
 }
