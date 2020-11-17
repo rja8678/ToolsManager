@@ -5,6 +5,7 @@ import ObjectClasses.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DBTool {
     private DBConn dbConn;
@@ -18,13 +19,20 @@ public class DBTool {
         boolean lendable = false;
         Date purchaseDate = null;
         int ownerId = -1;
+        ArrayList<String> tool_types = null;
 
         if(!dbConn.connected()) {
             System.out.println("System not connected.");
             return null;
         }
         try {
-            PreparedStatement st = dbConn.getConn().prepareStatement("SELECT * FROM tool WHERE idtool = ?");
+            PreparedStatement st = dbConn.getConn().prepareStatement("" +
+                    "SELECT t.*, u.iduser, string_agg(t2.type_name, ',') as types FROM tool t " +
+                    "    INNER JOIN user_owns_tool u ON t.idtool = u.idtool " +
+                    "    INNER JOIN tool_tooltype tt on t.idtool = tt.idtool " +
+                    "    INNER JOIN tooltype t2 on t2.idtool_type = tt.idtool_type " +
+                    "WHERE t.idtool = ? " +
+                    "GROUP BY t.idtool, u.iduser");
             st.setInt(1, toolID);
             ResultSet rs = st.executeQuery();
 
@@ -32,27 +40,19 @@ public class DBTool {
                 name= rs.getString("name");
                 lendable = rs.getBoolean("lendable"); // todo this may break
                 purchaseDate = rs.getDate("purchase_date");
+                ownerId = rs.getInt("iduser") ;
+                tool_types = new ArrayList<String>(Arrays.asList(rs.getString("types").split(",")) );
+
             }
             rs.close();
             st.close();
-
-            PreparedStatement inner_st = dbConn.getConn().prepareStatement("SELECT iduser FROM user_owns_tool WHERE idtool = ?");
-            inner_st.setInt(1, toolID);
-            ResultSet inner_rs = inner_st.executeQuery();
-
-            if(inner_rs.next()) {
-                ownerId = inner_rs.getInt(1);
-            }
-
-            inner_rs.close();
-            inner_st.close();
             
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
 //        System.out.println("Tool with id " + toolID + " fetched from Database successfully");
-        return new Tool(toolID, ownerId, name, purchaseDate, lendable, fetchToolTypes(toolID));
+        return new Tool(toolID, ownerId, name, purchaseDate, lendable, tool_types);
     }
 
     public ArrayList<String> fetchToolTypes(int toolid) {

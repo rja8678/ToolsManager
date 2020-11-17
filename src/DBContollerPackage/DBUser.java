@@ -106,7 +106,7 @@ public class DBUser {
             collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
         }
 
-        System.out.println("Collection for user: "+ id +" fetched from DB successfully");
+        System.out.println("Owned Tools for user: "+ id +" fetched from DB successfully");
         return collection;
     }
 

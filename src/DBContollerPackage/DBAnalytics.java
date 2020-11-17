@@ -32,6 +32,7 @@ public class DBAnalytics {
                     "GROUP BY t2.type_name " +
                     "ORDER BY lend_count DESC " +
                     "LIMIT 1");
+
             ResultSet rs = st.executeQuery();
 
             while (rs.next()) {
