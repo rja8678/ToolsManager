@@ -51,7 +51,7 @@ public class User {
     public User (int id, DBConn conn) {
         DBUser dbu = new DBUser(conn) ;
 
-        User t = dbu.createUserObject(id);
+        User t = dbu.createUserObject(id, true);
 
         this.dbu = dbu;
         this.userID = t.userID;
@@ -61,6 +61,12 @@ public class User {
         this.ownedTools = t.ownedTools;
     }
 
+    public User(int id, DBConn conn, boolean loadTools) {
+    	DBUser dbu = new DBUser(conn);
+    	
+//    	User t = dbu.creat
+    }
+    
     public int getUserID() {
         return userID;
     }
@@ -266,7 +272,7 @@ public class User {
             return false;
         } else {
             //check if the user_to owns this tool
-            User userTo = dbu.createUserObject(tool.getOwnerID());
+            User userTo = dbu.createUserObject(tool.getOwnerID(), true);
             //check if you have tool in your collection
             if (this.getToolCollection().contains(tool)) {
                 if(this.removeFromCollection(tool) && userTo.addToCollection(tool)){

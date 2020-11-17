@@ -19,7 +19,7 @@ public class DBUser {
         this.conn = conn;
     }
 
-    public User createUserObject(int id){
+    public User createUserObject(int id, boolean loadTools){
         String fname = null;
         String lname = null;
         if(!conn.connected()) {
@@ -42,10 +42,11 @@ public class DBUser {
             System.exit(0);
         }
         System.out.println("User with id: " + id + " fetched from DB successfully");
-        return new User(id, fname, lname, fetchUserToolCollection(id), fetchUserOwnedTools(id), this);
+        return new User(id, fname, lname, fetchUserToolCollection(id, loadTools), fetchUserOwnedTools(id, loadTools), this);
     }
 
-    public HashMap<Integer, Tool> fetchUserToolCollection(int id) {
+
+    public HashMap<Integer, Tool> fetchUserToolCollection(int id, boolean loadTools) {
         Statement stmt = null;
         ArrayList<Integer> toolids = new ArrayList<>() ;
         HashMap<Integer, Tool> collection = new HashMap<>() ;
@@ -79,7 +80,7 @@ public class DBUser {
         return collection;
     }
 
-    public HashMap<Integer, Tool> fetchUserOwnedTools(int id) {
+    public HashMap<Integer, Tool> fetchUserOwnedTools(int id, boolean loadTools) {
         ArrayList<Integer> toolids = new ArrayList<>() ;
         HashMap<Integer, Tool> collection = new HashMap<>() ;
 
@@ -101,11 +102,27 @@ public class DBUser {
             System.exit(0);
         }
 
-        DBTool temptool_acc = new DBTool(conn);
-        for(int i = 0; i < toolids.size(); i++) {
-            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
-        }
+        
+//        DBTool temptool_acc = new DBTool(conn);
+//        for(int i = 0; i < toolids.size(); i++) {
+//            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
+//        }
+        
+        PreparedStatement st;
+		try {
+			st = conn.getConn().prepareStatement("SELECT * FROM tool WHERE idtool = ?");
+		
+			st.setInt(1, id);
+        	ResultSet rs = st.executeQuery();
 
+        	while ( rs.next() ) {
+            	toolids.add(rs.getInt("idtool"));
+        	}
+        	rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
         System.out.println("Collection for user: "+ id +" fetched from DB successfully");
         return collection;
     }
