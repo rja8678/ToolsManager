@@ -18,17 +18,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 /**
@@ -61,17 +55,27 @@ public class ToolInterface extends Application{
  
             @Override
             public void handle(ActionEvent event) {
+                int userID = Integer.MIN_VALUE;
                 String usernameInput = username.getText();
-                
-                System.out.println(Integer.parseInt(usernameInput));
+                try{
+                    userID = Integer.parseInt(usernameInput);
+                }catch (NumberFormatException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid UserID!");
+                    alert.setContentText("UserID must be an integer.");
+                    alert.show();
+                }
+                if(userID !=  Integer.MIN_VALUE) {
+                    System.out.println(userID);
 
-                appUser = new User(Integer.parseInt(usernameInput), conn);
-                
-                //Call setup that requires the appUser here
-                refreshToolCollection(appUser.getToolCollection());
-                refreshToolsOwned(appUser.getOwnedTools());
-                lendingPaneInit();
-                refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
+                    appUser = new User(Integer.parseInt(usernameInput), conn);
+
+                    //Call setup that requires the appUser here
+                    refreshToolCollection(appUser.getToolCollection());
+                    refreshToolsOwned(appUser.getOwnedTools());
+                    lendingPaneInit();
+                    refreshLogs(appUser.getLendingLogs(), conn.fetchAllUsers());
+                }
             }
         });
 
