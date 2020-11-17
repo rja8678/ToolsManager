@@ -133,10 +133,12 @@ public class ToolInterface extends Application{
         HBox lendLogs = new HBox();
         ScrollPane lendLogScroll = new ScrollPane();
         lendLogScroll.setContent(lendLogs);
-        lendLogScroll.resize(800, 200);
+        lendLogScroll.setPrefViewportWidth(800);
+        lendLogScroll.setPrefViewportHeight(200);
+//        lendLogScroll.resize(800, 200);
 
-        lendLogScroll.setFitToHeight(true);
-        lendLogScroll.setFitToWidth(true);
+//        lendLogScroll.setFitToHeight(true);
+//        lendLogScroll.setFitToWidth(true);
         
         logDateCol = new VBox();
         actionCol = new VBox();
