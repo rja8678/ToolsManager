@@ -262,17 +262,55 @@ public class DBUser {
     public ArrayList<LendingLog> fetchUserLogs(int uid) {
         ArrayList<LendingLog> logSet = new ArrayList<>();
 
+        LendingLog log = null;
+        Date logDate = null;
+        int action = -1;
+        Date returnDate = null;
+
+        int toUser = -1;
+        int fromUser = -1;
+        int idtool = -1 ;
+
+        int logid = -1;
+
         try {
-            PreparedStatement stmt = conn.getConn().prepareStatement("SELECT idlog FROM log_relation WHERE from_iduser = ? OR to_iduser = ?");
+            PreparedStatement stmt = conn.getConn().prepareStatement("" +
+                    "SELECT ll.*, lr.* FROM lendinglog ll " +
+                    "    INNER JOIN log_relation lr on ll.idlog = lr.idlog " +
+                    "WHERE lr.to_iduser = ? OR lr.from_iduser = ?; ");
             stmt.setInt(1, uid);
             stmt.setInt(2, uid);
+
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                logSet.add(conn.fetchLendingLog(rs.getInt(1)));
+            while ( rs.next() ) {
+                logDate = rs.getDate("log_date");
+                action = rs.getInt("action");
+                returnDate = rs.getDate("return_date");
+
+                toUser = rs.getInt("to_iduser") ;
+                fromUser = rs.getInt("from_iduser") ;
+                idtool = rs.getInt("idtool");
+
+                logid = rs.getInt("idlog");
+
+                ActionType at;
+
+                if(action == 0) {
+                    at = ActionType.Lend;
+                }
+                else {
+                    at = ActionType.Return;
+                }
+
+                log = new LendingLog(logid, logDate, at, returnDate, idtool, toUser, fromUser);
+
+                logSet.add(log) ;
             }
 
-            System.out.println("Successfully returned list of 'LendingLog' related to user: " + uid);
+            rs.close();
+            stmt.close();
+
 
         } catch (Exception e) {
             System.out.println("Failed to pull user logs from DB.");
