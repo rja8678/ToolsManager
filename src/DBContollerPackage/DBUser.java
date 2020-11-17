@@ -65,18 +65,19 @@ public class DBUser {
         try {
             stmt = conn.getConn().createStatement();
             PreparedStatement st = conn.getConn().prepareStatement("" +
-                    "SELECT t.*, u.iduser, string_agg(t2.type_name, ',') as types FROM tool t " +
+                    "SELECT t.*, uot.iduser, string_agg(t2.type_name, ',') as types FROM tool t " +
                     "    INNER JOIN collection u ON t.idtool = u.idtool " +
+                    "    INNER JOIN user_owns_tool uot ON t.idtool = uot.idtool " +
                     "    INNER JOIN tool_tooltype tt on t.idtool = tt.idtool " +
                     "    INNER JOIN tooltype t2 on t2.idtool_type = tt.idtool_type " +
                     "WHERE u.idUser = ? " +
-                    "GROUP BY t.idtool, u.iduser ");
+                    "GROUP BY t.idtool, uot.iduser");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
             while ( rs.next() ) {
                 name= rs.getString("name");
-                lendable = rs.getBoolean("lendable"); // todo this may break
+                lendable = rs.getBoolean("lendable");
                 purchaseDate = rs.getDate("purchase_date");
                 ownerId = rs.getInt("iduser") ;
                 toolId = rs.getInt("idtool") ;
@@ -130,7 +131,7 @@ public class DBUser {
 
             while ( rs.next() ) {
                 name= rs.getString("name");
-                lendable = rs.getBoolean("lendable"); // todo this may break
+                lendable = rs.getBoolean("lendable");
                 purchaseDate = rs.getDate("purchase_date");
                 ownerId = rs.getInt("iduser") ;
                 toolId = rs.getInt("idtool") ;
