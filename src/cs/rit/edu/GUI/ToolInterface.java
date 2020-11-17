@@ -89,6 +89,17 @@ public class ToolInterface extends Application{
         login.setAlignment(Pos.CENTER_LEFT);
         login.getChildren().add(usernameGroup);
         login.getChildren().add(loginBtn);
+        
+        Button statsBtn = new Button();
+        statsBtn.setText("Get Statistics");
+        statsBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	 
+            @Override
+            public void handle(ActionEvent event) {
+            	//TODO Generate CSV here and save file
+            }
+        });
+        login.getChildren().add(statsBtn);
 
         //Collection in the center, holds the collection of tools and owned tools
         HBox toolLists = new HBox();
