@@ -34,24 +34,28 @@ public class RandomLending {
 			
 			
 			for(User user: usersList) {
+				System.out.println("Lending tools out for "+user.getUserID());
             	for (Tool tool: user.getOwnedTools()) {
             		if(rand.nextFloat() > lend_chance) {
             			int rand_user = rand.nextInt(users.keySet().size());
-            			while(rand_user != user.getUserID()) {
+            			while(rand_user == user.getUserID()) {
             				rand_user = rand.nextInt(users.keySet().size());
             			}
-            			user.lendTool(tool, usersList.get(rand_user), new Date(System.currentTimeMillis() + rand.nextLong() % 3000000000l));
+            			user.lendTool(tool, usersList.get(rand_user), new Date(System.currentTimeMillis() + Math.abs(rand.nextLong()) % 3000000000l));
             		}
             	}
 			}
-            
-//			for(User user: usersList) {
-//				for (Tool tool: user.getToolCollection()) {
-//					if(rand.nextFloat() > return_chance) {
-//						user.returnTool(tool);
-//					}
-//				}
-//			}
+
+			for(User user: usersList) {
+				System.out.println("Returning tools of "+user.getUserID());
+				for (Tool tool: user.getToolCollection()) {
+					if (tool.getOwnerID() != user.getUserID()) {
+						if(rand.nextFloat() > return_chance) {
+							user.returnTool(tool);
+						}
+					}
+				}
+			}
 			
 		}else {
 			System.out.println("Please give the database username and password as commandline arguments");
