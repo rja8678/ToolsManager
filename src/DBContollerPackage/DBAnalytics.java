@@ -37,7 +37,7 @@ public class DBAnalytics {
             while (rs.next()) {
                 List<String> inner = new ArrayList<String>();
                 inner.add(rs.getString("type_name"));
-                inner.add(rs.getString("lend_count"));
+                inner.add(Integer.toString(rs.getInt("lend_count")));
 
                 rtnSet.add(inner);
             }
