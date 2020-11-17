@@ -51,7 +51,7 @@ public class User {
     public User (int id, DBConn conn) {
         DBUser dbu = new DBUser(conn) ;
 
-        User t = dbu.createUserObject(id, true);
+        User t = dbu.createUserObject(id);
 
         this.dbu = dbu;
         this.userID = t.userID;
@@ -59,12 +59,6 @@ public class User {
         this.lastName = t.lastName;
         this.toolCollection = t.toolCollection;
         this.ownedTools = t.ownedTools;
-    }
-
-    public User(int id, DBConn conn, boolean loadTools) {
-    	DBUser dbu = new DBUser(conn);
-    	
-//    	User t = dbu.creat
     }
     
     public int getUserID() {
@@ -215,7 +209,7 @@ public class User {
      * @param user_to the user to give the tool to
      * @return boolean returns true if operation completed successfully.
      */
-    public boolean lendTool(Tool tool, User user_to, Date returnDate){
+    public boolean lendTool(Tool tool, User user_to, Date returnDate) {
         //check if tool is owned by you and is currently in your possession
         if(this.ownedTools.containsKey(tool.getToolID())) {
             if (this.toolCollection.containsKey(tool.getToolID())) {
@@ -272,7 +266,7 @@ public class User {
             return false;
         } else {
             //check if the user_to owns this tool
-            User userTo = dbu.createUserObject(tool.getOwnerID(), true);
+            User userTo = dbu.createUserObject(tool.getOwnerID());
             //check if you have tool in your collection
             if (this.getToolCollection().contains(tool)) {
                 if(this.removeFromCollection(tool) && userTo.addToCollection(tool)){
