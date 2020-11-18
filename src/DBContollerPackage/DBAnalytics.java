@@ -31,8 +31,7 @@ public class DBAnalytics {
                     "WHERE log_relation.idlog IN" +
                     "   (SELECT idlog FROM lendinglog WHERE action = 0) " +
                     "GROUP BY t2.type_name " +
-                    "ORDER BY lend_count DESC " +
-                    "LIMIT 1");
+                    "ORDER BY lend_count DESC");
 
             ResultSet rs = st.executeQuery();
 
@@ -110,7 +109,7 @@ public class DBAnalytics {
                     "WHERE log_relation.idlog IN " +
                     "      (SELECT idlog from lendinglog WHERE action = 0) " +
                     "GROUP BY t.name, t.idtool " +
-                    "ORDER BY usage DESC LIMIT 1;");
+                    "ORDER BY usage DESC");
 
             ResultSet rs = st.executeQuery();
 
