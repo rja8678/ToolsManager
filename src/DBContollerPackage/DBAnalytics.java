@@ -168,5 +168,71 @@ public class DBAnalytics {
         return rtnSet;
     }
     
+    public List<List<String>> toolsIAmLending(int userID) {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT name " + 
+            		"FROM tool " + 
+            		"WHERE idtool IN ( " + 
+            		"   SELECT idtool FROM collection WHERE iduser = ? " + 
+            		"   EXCEPT " + 
+            		"   SELECT idtool FROM user_owns_tool WHERE iduser = ?);");
+
+            st.setInt(1, userID);
+            st.setInt(2, userID);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("name"));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
     
+    public List<List<String>> toolsIHaveLentOut(int userID) {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT name " + 
+            		"FROM tool " + 
+            		"WHERE idtool IN ( " + 
+            		"SELECT idtool FROM user_owns_tool WHERE iduser = ? " + 
+            		"EXCEPT " + 
+            		"SELECT idtool FROM collection WHERE iduser = ?);");
+
+            st.setInt(1, userID);
+            st.setInt(2, userID);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("name"));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
 }
