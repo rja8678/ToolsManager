@@ -129,4 +129,45 @@ public class DBAnalytics {
         }
         return rtnSet;
     }
+    
+    public List<List<String>> mostRecentLending(int userID) {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT t.name as tool_name, " + 
+            		"       t.idtool, " + 
+            		"       action, " + 
+            		"      log_date " + 
+            		"FROM lendinglog inner join log_relation lr on lendinglog.idlog = lr.idlog " + 
+            		"inner join tool t on lr.idtool = t.idtool " + 
+            		"WHERE lr.from_iduser = ? " + 
+            		"ORDER BY  log_date DESC " + 
+            		"LIMIT 10;");
+
+            st.setInt(1, userID);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("tool_name"));
+                inner.add(Integer.toString(rs.getInt("idtool")));
+                inner.add(Integer.toString(rs.getInt("action")));
+                inner.add(rs.getDate("log_date").toString());
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    
 }
