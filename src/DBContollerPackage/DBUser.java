@@ -92,11 +92,6 @@ public class DBUser {
             System.exit(0);
         }
 
-//        DBTool temptool_acc = new DBTool(conn);
-//        for(int i = 0; i < toolids.size(); i++) {
-//            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
-//        }
-
         System.out.println("Collection for user: "+ id +" fetched from DB successfully");
         return collection;
     }
@@ -310,7 +305,6 @@ public class DBUser {
 
             rs.close();
             stmt.close();
-
 
         } catch (Exception e) {
             System.out.println("Failed to pull user logs from DB.");
