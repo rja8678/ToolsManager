@@ -35,17 +35,15 @@ public class AnalyticsOutput {
 			System.out.println("Unable to open file.");
 			e.printStackTrace();
 		}
-
 	}
-
 
 
 	public void generateOutput(DBConn conn) {
 		DBAnalytics analytics = new DBAnalytics(conn);
 
-		writeFile(analytics.mostLentTool(), "mostlenttool.csv");
-		writeFile(analytics.mostLentType(), "mostlenttype.csv");
-		writeFile(analytics.overdueTools(), "overduetools.csv");
+		writeFile(analytics.mostLentTool(), "analytics/mostlenttool.csv");
+		writeFile(analytics.mostLentType(), "analytics/mostlenttype.csv");
+		writeFile(analytics.overdueTools(), "analytics/overduetools.csv");
 		//todo: repeat this for each analytics type
 
 	}

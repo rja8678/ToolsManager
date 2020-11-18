@@ -1,6 +1,7 @@
 package cs.rit.edu;
 
 import ObjectClasses.ActionType;
+
 import ObjectClasses.LendingLog;
 
 import java.sql.*;
