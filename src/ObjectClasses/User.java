@@ -60,7 +60,7 @@ public class User {
         this.toolCollection = t.toolCollection;
         this.ownedTools = t.ownedTools;
     }
-
+    
     public int getUserID() {
         return userID;
     }
@@ -209,7 +209,7 @@ public class User {
      * @param user_to the user to give the tool to
      * @return boolean returns true if operation completed successfully.
      */
-    public boolean lendTool(Tool tool, User user_to, Date returnDate){
+    public boolean lendTool(Tool tool, User user_to, Date returnDate) {
         //check if tool is owned by you and is currently in your possession
         if(this.ownedTools.containsKey(tool.getToolID())) {
             if (this.toolCollection.containsKey(tool.getToolID())) {

@@ -89,6 +89,17 @@ public class ToolInterface extends Application{
         login.setAlignment(Pos.CENTER_LEFT);
         login.getChildren().add(usernameGroup);
         login.getChildren().add(loginBtn);
+        
+        Button statsBtn = new Button();
+        statsBtn.setText("Get Statistics");
+        statsBtn.setOnAction(new EventHandler<ActionEvent>() {
+        	 
+            @Override
+            public void handle(ActionEvent event) {
+            	//TODO Generate CSV here and save file
+            }
+        });
+        login.getChildren().add(statsBtn);
 
         //Collection in the center, holds the collection of tools and owned tools
         HBox toolLists = new HBox();
@@ -122,10 +133,8 @@ public class ToolInterface extends Application{
         HBox lendLogs = new HBox();
         ScrollPane lendLogScroll = new ScrollPane();
         lendLogScroll.setContent(lendLogs);
-        lendLogScroll.resize(800, 200);
-
-        lendLogScroll.setFitToHeight(true);
-        lendLogScroll.setFitToWidth(true);
+        lendLogScroll.setPrefViewportWidth(800);
+        lendLogScroll.setPrefViewportHeight(200);
         
         logDateCol = new VBox();
         actionCol = new VBox();
