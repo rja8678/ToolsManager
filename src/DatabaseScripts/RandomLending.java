@@ -41,7 +41,7 @@ public class RandomLending {
             			while(rand_user == user.getUserID()) {
             				rand_user = rand.nextInt(users.keySet().size());
             			}
-            			user.lendTool(tool, usersList.get(rand_user), new Date(System.currentTimeMillis() + Math.abs(rand.nextLong()) % 3000000000l));
+            			user.lendTool(tool, usersList.get(rand_user), new Date(System.currentTimeMillis() + rand.nextLong() % 3000000000l));
             		}
             	}
 			}
