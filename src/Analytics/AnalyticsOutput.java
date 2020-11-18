@@ -24,7 +24,7 @@ public class AnalyticsOutput {
 		}
 
 		try {
-			File file = new File("output.csv");
+			File file = new File(filename);
 
 			FileWriter out = new FileWriter(file);
 			out.write(result.toString());
