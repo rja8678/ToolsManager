@@ -18,8 +18,12 @@ public class AnalyticsOutput {
 		//first, need to collect all the data into one list of lists.
 
 		List<List<String>> mostLentTypesData = analytics.mostLentType();
+		List<List<String>> overdueToolsData = analytics.overdueTools();
+		List<List<String>> mostLentToolData = analytics.mostLentTool();
 
 		data.addAll(mostLentTypesData);
+		data.addAll(overdueToolsData);
+		data.addAll(mostLentToolData);
 
 
 
@@ -28,14 +32,13 @@ public class AnalyticsOutput {
 
 
 		//builds final "result" string to be printed to file
-		for(int i = 0; i < data.size(); i++){
-			for(int j = 0; j < data.get(0).size(); j++){
-				result.append(data.get(i).get(j));
+		for(List<String> datalist:data){
+			for(String element:datalist){
+				result.append(element);
 				result.append(", ");
 			}
 			result.append("\n");
 		}
-		
 		
 		try {
 			File file = new File("output.csv");
