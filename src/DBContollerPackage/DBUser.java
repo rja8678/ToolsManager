@@ -160,7 +160,7 @@ public class DBUser {
 //            System.exit(0);
             return false;
         }
-        System.out.println("Operation done successfully");
+        System.out.println("Successfully removed tool: " + tid + " from user: " + uid + "'s collection.");
         return true;
     }
 
@@ -179,7 +179,7 @@ public class DBUser {
 //            System.exit(0);
             return false;
         }
-        System.out.println("Operation done successfully");
+        System.out.println("Successfully added tool: " + tid + " to user: " + uid + "'s collection.");
         return true;
     }
 
