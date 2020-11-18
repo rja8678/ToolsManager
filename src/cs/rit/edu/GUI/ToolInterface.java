@@ -99,8 +99,12 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
             	//TODO Generate CSV here and save file
-                AnalyticsOutput analyticsOutput = new AnalyticsOutput();
-                analyticsOutput.generateOutput(conn);
+                if (appUser != null) {
+                	AnalyticsOutput analyticsOutput = new AnalyticsOutput();
+                	analyticsOutput.generateOutput(conn, appUser.getUserID());
+                }else {
+                	System.out.println("You have to be signed in to get analytics");
+                }
             }
         });
         login.getChildren().add(statsBtn);

@@ -168,7 +168,7 @@ public class DBAnalytics {
         return rtnSet;
     }
     
-    public List<List<String>> toolsIAmLending(int userID) {
+    public List<List<String>> toolsIHaveLent(int userID) {
         List<List<String>> rtnSet = new ArrayList<>() ;
 
         if(!this.dbconn.connected()) {
@@ -202,7 +202,7 @@ public class DBAnalytics {
         return rtnSet;
     }
     
-    public List<List<String>> toolsIHaveLentOut(int userID) {
+    public List<List<String>> toolsIAmLendihgOut(int userID) {
         List<List<String>> rtnSet = new ArrayList<>() ;
 
         if(!this.dbconn.connected()) {
@@ -224,6 +224,168 @@ public class DBAnalytics {
             while (rs.next()) {
                 List<String> inner = new ArrayList<String>();
                 inner.add(rs.getString("name"));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    public List<List<String>> userWithMostToolsOwned() {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT concat(u.fname,' ', u.lname) as username, u.iduser, count(idtool) tools_owned " + 
+            		"FROM user_owns_tool " + 
+            		"   INNER JOIN \"user\" u on u.iduser = user_owns_tool.iduser " + 
+            		"GROUP BY username, u.iduser " + 
+            		"ORDER BY tools_owned DESC;");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("username"));
+                inner.add(Integer.toString(rs.getInt("tools_owned")));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    public List<List<String>> userWithMostToolsInCollection() {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT concat(u.fname,' ', u.lname) as username, u.iduser, count(idtool) collection_size " + 
+            		"FROM collection " + 
+            		"   INNER JOIN \"user\" u on u.iduser = collection.iduser " + 
+            		"GROUP BY username, u.iduser " + 
+            		"ORDER BY collection_size DESC;");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("username"));
+                inner.add(Integer.toString(rs.getInt("collection_size")));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    public List<List<String>> userWithMostLends() {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT from_iduser, concat(u.fname, ' ', u.lname) as username, count(idlog) lent_count " + 
+            		"FROM log_relation " + 
+            		"   INNER JOIN \"user\" u on u.iduser = log_relation.from_iduser " + 
+            		"WHERE idlog IN " + 
+            		"     (SELECT idlog FROM lendinglog WHERE action = 0) " + 
+            		"GROUP BY from_iduser, username " + 
+            		"ORDER BY lent_count DESC;");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("username"));
+                inner.add(Integer.toString(rs.getInt("lent_count")));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    public List<List<String>> userOwnedToolTypes(int userID) {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT type_name, count(tt.idtool) as usage " + 
+            		"FROM tooltype INNER JOIN tool_tooltype tt on tooltype.idtool_type = tt.idtool_type " + 
+            		"WHERE tt.idtool IN (SELECT idtool FROM user_owns_tool WHERE iduser = ?) " + 
+            		"GROUP BY type_name ORDER BY usage DESC;");
+
+            st.setInt(1, userID);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("type_name"));
+                inner.add(Integer.toString(rs.getInt("usage")));
+
+                rtnSet.add(inner);
+            }
+
+            rs.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtnSet;
+    }
+    
+    public List<List<String>> userCollectionToolTypes(int userID) {
+        List<List<String>> rtnSet = new ArrayList<>() ;
+
+        if(!this.dbconn.connected()) {
+            System.out.println("System not connected.");
+            return null;
+        }
+        try {
+            PreparedStatement st = dbconn.getConn().prepareStatement("SELECT type_name, count(tt.idtool) as usage " + 
+            		"FROM tooltype INNER JOIN tool_tooltype tt on tooltype.idtool_type = tt.idtool_type " + 
+            		"WHERE tt.idtool IN (SELECT idtool FROM collection WHERE iduser = ?) " + 
+            		"GROUP BY type_name ORDER BY usage DESC;");
+
+            st.setInt(1, userID);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                List<String> inner = new ArrayList<String>();
+                inner.add(rs.getString("type_name"));
+                inner.add(Integer.toString(rs.getInt("usage")));
 
                 rtnSet.add(inner);
             }
