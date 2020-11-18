@@ -8,6 +8,7 @@ import cs.rit.edu.DBConn;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class DBUser {
@@ -47,8 +48,15 @@ public class DBUser {
 
     public HashMap<Integer, Tool> fetchUserToolCollection(int id) {
         Statement stmt = null;
-        ArrayList<Integer> toolids = new ArrayList<>() ;
+//        ArrayList<Integer> toolids = new ArrayList<>() ;
         HashMap<Integer, Tool> collection = new HashMap<>() ;
+
+        String name = null;
+        boolean lendable = false;
+        Date purchaseDate = null;
+        int ownerId = -1;
+        ArrayList<String> tool_types = null;
+        int toolId = -1;
 
         if(!conn.connected()) {
             System.out.println("System not connected.");
@@ -56,12 +64,26 @@ public class DBUser {
         }
         try {
             stmt = conn.getConn().createStatement();
-            PreparedStatement st = conn.getConn().prepareStatement("SELECT idtool from collection where iduser = ?");
+            PreparedStatement st = conn.getConn().prepareStatement("" +
+                    "SELECT t.*, uot.iduser, string_agg(t2.type_name, ',') as types FROM tool t " +
+                    "    INNER JOIN collection u ON t.idtool = u.idtool " +
+                    "    INNER JOIN user_owns_tool uot ON t.idtool = uot.idtool " +
+                    "    INNER JOIN tool_tooltype tt on t.idtool = tt.idtool " +
+                    "    INNER JOIN tooltype t2 on t2.idtool_type = tt.idtool_type " +
+                    "WHERE u.idUser = ? " +
+                    "GROUP BY t.idtool, uot.iduser");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
             while ( rs.next() ) {
-                toolids.add(rs.getInt("idtool"));
+                name= rs.getString("name");
+                lendable = rs.getBoolean("lendable");
+                purchaseDate = rs.getDate("purchase_date");
+                ownerId = rs.getInt("iduser") ;
+                toolId = rs.getInt("idtool") ;
+                tool_types = new ArrayList<String>(Arrays.asList(rs.getString("types").split(",")) );
+
+                collection.put(toolId,new Tool(toolId, ownerId, name, purchaseDate, lendable, tool_types));
             }
             rs.close();
             stmt.close();
@@ -70,40 +92,58 @@ public class DBUser {
             System.exit(0);
         }
 
-        DBTool temptool_acc = new DBTool(conn);
-        for(int i = 0; i < toolids.size(); i++) {
-            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
-        }
+//        DBTool temptool_acc = new DBTool(conn);
+//        for(int i = 0; i < toolids.size(); i++) {
+//            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
+//        }
 
         System.out.println("Collection for user: "+ id +" fetched from DB successfully");
         return collection;
     }
 
     public HashMap<Integer, Tool> fetchUserOwnedTools(int id) {
-        ArrayList<Integer> toolids = new ArrayList<>() ;
+        Statement stmt = null;
+//        ArrayList<Integer> toolids = new ArrayList<>() ;
         HashMap<Integer, Tool> collection = new HashMap<>() ;
+
+        String name = null;
+        boolean lendable = false;
+        Date purchaseDate = null;
+        int ownerId = -1;
+        ArrayList<String> tool_types = null;
+        int toolId = -1;
 
         if(!conn.connected()) {
             System.out.println("System not connected.");
             return null;
         }
         try {
-            PreparedStatement st = conn.getConn().prepareStatement("SELECT idtool from user_owns_tool where iduser = ?");
+            stmt = conn.getConn().createStatement();
+            PreparedStatement st = conn.getConn().prepareStatement("" +
+                    "SELECT t.*, u.iduser, string_agg(t2.type_name, ',') as types FROM tool t " +
+                    "    INNER JOIN user_owns_tool u ON t.idtool = u.idtool " +
+                    "    INNER JOIN tool_tooltype tt on t.idtool = tt.idtool " +
+                    "    INNER JOIN tooltype t2 on t2.idtool_type = tt.idtool_type " +
+                    "WHERE u.idUser = ? " +
+                    "GROUP BY t.idtool, u.iduser ");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
             while ( rs.next() ) {
-                toolids.add(rs.getInt("idtool"));
+                name= rs.getString("name");
+                lendable = rs.getBoolean("lendable");
+                purchaseDate = rs.getDate("purchase_date");
+                ownerId = rs.getInt("iduser") ;
+                toolId = rs.getInt("idtool") ;
+                tool_types = new ArrayList<String>(Arrays.asList(rs.getString("types").split(",")) );
+
+                collection.put(toolId, new Tool(toolId, ownerId, name, purchaseDate, lendable, tool_types));
             }
             rs.close();
+            stmt.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
-        }
-
-        DBTool temptool_acc = new DBTool(conn);
-        for(int i = 0; i < toolids.size(); i++) {
-            collection.put(toolids.get(i), temptool_acc.fetchTool(toolids.get(i)));
         }
 
         System.out.println("Owned Tools for user: "+ id +" fetched from DB successfully");
@@ -222,17 +262,55 @@ public class DBUser {
     public ArrayList<LendingLog> fetchUserLogs(int uid) {
         ArrayList<LendingLog> logSet = new ArrayList<>();
 
+        LendingLog log = null;
+        Date logDate = null;
+        int action = -1;
+        Date returnDate = null;
+
+        int toUser = -1;
+        int fromUser = -1;
+        int idtool = -1 ;
+
+        int logid = -1;
+
         try {
-            PreparedStatement stmt = conn.getConn().prepareStatement("SELECT idlog FROM log_relation WHERE from_iduser = ? OR to_iduser = ?");
+            PreparedStatement stmt = conn.getConn().prepareStatement("" +
+                    "SELECT ll.*, lr.* FROM lendinglog ll " +
+                    "    INNER JOIN log_relation lr on ll.idlog = lr.idlog " +
+                    "WHERE lr.to_iduser = ? OR lr.from_iduser = ?; ");
             stmt.setInt(1, uid);
             stmt.setInt(2, uid);
+
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                logSet.add(conn.fetchLendingLog(rs.getInt(1)));
+            while ( rs.next() ) {
+                logDate = rs.getDate("log_date");
+                action = rs.getInt("action");
+                returnDate = rs.getDate("return_date");
+
+                toUser = rs.getInt("to_iduser") ;
+                fromUser = rs.getInt("from_iduser") ;
+                idtool = rs.getInt("idtool");
+
+                logid = rs.getInt("idlog");
+
+                ActionType at;
+
+                if(action == 0) {
+                    at = ActionType.Lend;
+                }
+                else {
+                    at = ActionType.Return;
+                }
+
+                log = new LendingLog(logid, logDate, at, returnDate, idtool, toUser, fromUser);
+
+                logSet.add(log) ;
             }
 
-            System.out.println("Successfully returned list of 'LendingLog' related to user: " + uid);
+            rs.close();
+            stmt.close();
+
 
         } catch (Exception e) {
             System.out.println("Failed to pull user logs from DB.");

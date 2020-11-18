@@ -111,7 +111,10 @@ public class DBConn {
         int idtool = -1 ;
 
         try {
-            PreparedStatement st = this.getConn().prepareStatement("SELECT * FROM lendinglog WHERE idlog = ?");
+            PreparedStatement st = this.getConn().prepareStatement("" +
+                    "SELECT ll.*, lr.* FROM lendinglog ll " +
+                    "    INNER JOIN log_relation lr on ll.idlog = lr.idlog " +
+                    "WHERE ll.idlog = ?  ");
             st.setInt(1, logid);
             ResultSet rs = st.executeQuery();
 
@@ -119,21 +122,14 @@ public class DBConn {
                 logDate = rs.getDate("log_date");
                 action = rs.getInt("action");
                 returnDate = rs.getDate("return_date");
+
+                toUser = rs.getInt("to_iduser") ;
+                fromUser = rs.getInt("from_iduser") ;
+                idtool = rs.getInt("idtool");
             }
+
             rs.close();
             st.close();
-
-            PreparedStatement inner_st = this.getConn().prepareStatement("SELECT * FROM log_relation WHERE idlog = ?");
-            inner_st.setInt(1, logid);
-            ResultSet result = inner_st.executeQuery();
-
-            while ( result.next() ) {
-                toUser = result.getInt("to_iduser");
-                fromUser = result.getInt("from_iduser");
-                idtool = result.getInt("idtool");
-            }
-            result.close();
-            inner_st.close();
 
             ActionType at;
 
