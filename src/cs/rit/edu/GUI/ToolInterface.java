@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import Analytics.AnalyticsOutput;
+import DBContollerPackage.DBUser;
 import ObjectClasses.LendingLog;
 import ObjectClasses.Tool;
 import ObjectClasses.User;
@@ -97,6 +99,8 @@ public class ToolInterface extends Application{
             @Override
             public void handle(ActionEvent event) {
             	//TODO Generate CSV here and save file
+                AnalyticsOutput analyticsOutput = new AnalyticsOutput();
+                analyticsOutput.generateOutput(conn);
             }
         });
         login.getChildren().add(statsBtn);
